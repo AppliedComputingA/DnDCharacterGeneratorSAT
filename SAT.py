@@ -840,7 +840,7 @@ class App(ctk.CTk):
             )
         
 
-        self.categoryOptions = ["Race", "Class", "Background", "Personality", "Appearance", "Alignment", "Skills"]
+        self.categoryOptions = ["Race", "Class", "Background", "Personality"]#, "Appearance", "Alignment", "Skills"]
         self.selectedCategory = ctk.StringVar(value=self.categoryOptions[0])
 
         categorySelectRow = ctk.CTkFrame(self.popupFrame, fg_color="transparent")
@@ -1123,7 +1123,7 @@ class App(ctk.CTk):
             text_color=textColour2
         )
 
-        self.editCategoryOptions = ["Race", "Class", "Background", "Personality", "Appearance", "Alignment", "Skills"]
+        self.editCategoryOptions = ["Race", "Class", "Background", "Personality"]
         self.selectedEditCategory = ctk.StringVar(value=editEntry.get("Type", self.editCategoryOptions[0]))
 
         editCategorySelectRow = ctk.CTkFrame(self.editPopupFrame, fg_color="transparent")
@@ -2185,7 +2185,8 @@ class App(ctk.CTk):
         dctBackground = generator.CharacterGenerator().generateBackground(dictFilterSet["Background"])
         dctPersonality = generator.CharacterGenerator().generatePersonality(dictFilterSet["Personality"])
         dctAppearance = generator.CharacterGenerator().generateAppearance(dictFilterSet["Race"])
-        if dictFilterSet != {'Hair Colour': [], 'Skin Tone': [], 'Eye Colour': [], 'Height': [], 'Build': [], 'Distinguishing Feature': []}:
+        #if dictFilterSet != {'Hair Colour': [], 'Skin Tone': [], 'Eye Colour': [], 'Height': [], 'Build': [], 'Distinguishing Feature': []}:
+        if any(dictFilterSet.values()):
             strAppearance = generator.CharacterGenerator().createFilteredAppearance(appearanceFilters, dctRace["Race"])
         else:
             strAppearance = generator.CharacterGenerator().generateApperanceStr(dctRace["Race"])
@@ -2203,7 +2204,14 @@ class App(ctk.CTk):
             for skill in lstActiveSkills:
                 if self.skillCheckboxes[chk].cget("text") == skill:
                     self.skillCheckboxes[chk].select()
-                
+
+        """enabledChk = []
+        for chk in self.skillsList:
+            if self.skillCheckboxes[chk].get() ==  1:
+                enabledChk.append(chk)
+
+        print(enabledChk)"""
+
 
         
 
@@ -2277,6 +2285,14 @@ class App(ctk.CTk):
         Raises:
             None
         """
+        enabledChk = []
+        for chk in self.skillsList:
+            if self.skillCheckboxes[chk].get() ==  1:
+                enabledChk.append(chk)
+                
+
+        #print(enabledChk)
+        
         character = {
         "Name": self.lblName.cget("text"),
         "Race": self.lblRace.cget("text"),
@@ -2286,7 +2302,9 @@ class App(ctk.CTk):
         "BackgroundInfo": self.lblBackgroundInfo.cget("text"),
         "AppearanceInfo": self.lblAppearanceInfo.cget("text"),
         "AllignmentInfo": self.lblAllignmentInfo.cget("text"),
+        "Skills": enabledChk
         }
+        
 
         filePath = filedialog.asksaveasfilename(
             defaultextension=".json",
@@ -2334,6 +2352,12 @@ class App(ctk.CTk):
         self.lblBackgroundInfo.configure(text=character.get("BackgroundInfo", ""))
         self.lblAppearanceInfo.configure(text=character.get("AppearanceInfo", ""))
         self.lblAllignmentInfo.configure(text=character.get("AllignmentInfo", ""))
+
+        for chk in self.skillsList:
+            self.skillCheckboxes[chk].deselect()
+            for skill in character.get("Skills"):
+                if self.skillCheckboxes[chk].cget("text") == skill:
+                    self.skillCheckboxes[chk].select()
 # ------------------------------------------------------------------------------------------------------------------------------------
 # Editing
 # ------------------------------------------------------------------------------------------------------------------------------------
@@ -2374,8 +2398,17 @@ class App(ctk.CTk):
                 lbl.grid_remove()
                 txt.grid(row=1, column=0, sticky="nw", padx=10, pady=0)
 
+            self.lastEdittedSkills = []
+
+            for chk in self.skillsList:
+                if self.skillCheckboxes[chk].get() ==  1:
+                    self.lastEdittedSkills.append(chk)
+
+
             for chk in self.skillsList:
                 self.skillCheckboxes[chk].configure(state="normal")
+
+            
     
             self.entryName.insert(0, self.lblName.cget("text"))
             self.entryRace.insert(0, self.lblRace.cget("text"))
@@ -2526,6 +2559,12 @@ class App(ctk.CTk):
 
         for chk in self.skillsList:
             self.skillCheckboxes[chk].configure(state="disabled")
+
+        for chk in self.skillsList:
+            self.skillCheckboxes[chk].deselect()
+            for skill in self.lastEdittedSkills:
+                if self.skillCheckboxes[chk].cget("text") == skill:
+                    self.skillCheckboxes[chk].select()
 
         self.entryName.pack_forget()
         self.lblName.pack(side="left")
@@ -2737,6 +2776,13 @@ class App(ctk.CTk):
         Raises:
             Nonenary.
         """
+        enabledChk = []
+        
+        for chk in self.skillsList:
+            if self.skillCheckboxes[chk].get() ==  1:
+                enabledChk.append(chk)
+
+
         self.lstCharacterHistory.append({
                 "Name": self.lblName.cget("text"),
                 "Race": self.lblRace.cget("text"),
@@ -2746,6 +2792,7 @@ class App(ctk.CTk):
                 "BackgroundInfo": self.lblBackgroundInfo.cget("text"),
                 "AppearanceInfo": self.lblAppearanceInfo.cget("text"),
                 "AllignmentInfo": self.lblAllignmentInfo.cget("text"),
+                "Skills": enabledChk
                 })
 
     def loadHistory(self, character):
@@ -2776,6 +2823,12 @@ class App(ctk.CTk):
         self.lblBackgroundInfo.configure(text=character.get("BackgroundInfo", ""))
         self.lblAppearanceInfo.configure(text=character.get("AppearanceInfo", ""))
         self.lblAllignmentInfo.configure(text=character.get("AllignmentInfo", ""))
+
+        for chk in self.skillsList:
+            self.skillCheckboxes[chk].deselect()
+            for skill in character.get("Skills"):
+                if self.skillCheckboxes[chk].cget("text") == skill:
+                    self.skillCheckboxes[chk].select()
         self.destroyHistory()
 
 

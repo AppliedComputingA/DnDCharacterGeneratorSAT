@@ -250,7 +250,7 @@ class CharacterGenerator():
             for strKey, lstOptions in appearanceFilters.items():
                 #if lstOptions:
                 #    dctChosen[strKey] = random.choice(lstOptions)
-                lstAvailable = appearanceFilters.get(strKey) or lstOptions
+                lstAvailable = lstOptions if lstOptions else appearanceOptions[strKey]
                 dctChosen[strKey] = random.choice(lstAvailable)
 
             return (f"A {dctChosen['Height']}, {dctChosen['Build']} {Race} with "

@@ -255,23 +255,10 @@ class App(ctk.CTk):
         btnAdd.pack(pady=2, padx=intFilterXPad, anchor="e")
 
     def changeAppearanceMode(self, new_appearance_mode: str):
-        ctk.set_appearance_mode(new_appearance_mode)
-
-    def loadHomebrewFromCSV(self, filePath="Traits/HomebrewValues.csv"):
-        lstHomebrewEntries = []
-        try:
-            with open(filePath, newline='', encoding='utf-8') as csvfile:
-                reader = csv.DictReader(csvfile)
-                for row in reader:
-                    lstHomebrewEntries.append(row)
-        except FileNotFoundError:
-            pass
-        #print(lstHomebrewEntries)
-        return lstHomebrewEntries
-        
+        ctk.set_appearance_mode(new_appearance_mode)   
 
     def HomebrewSidebar(self):
-        self.homebrewEntries = self.loadHomebrewFromCSV()
+        self.homebrewEntries = generator.CharacterGenerator().loadHomebrew()
         #print(self.homebrewEntries)
         
         for entry in self.homebrewEntries:

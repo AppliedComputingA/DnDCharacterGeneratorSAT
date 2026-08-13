@@ -1,0 +1,7 @@
+Class,HitDie,PrimaryAbility,SavingThrows,StartingSkills
+Fighter,d10,Strength or Dexterity,Strength Constitution,Choose 2 from Acrobatics Athletics Intimidation
+Wizard,d6,Intelligence,Intelligence Wisdom,Choose 2 from Arcana History Investigation
+Rogue,d8,Dexterity,Dexterity Intelligence,Choose 4 from Acrobatics Deception Stealth Sleight of Hand
+Cleric,d8,Wisdom,Wisdom Charisma,Choose 2 from History Insight Medicine Religion
+Barbarian,d12,Strength,Strength Constitution,Choose 2 from Animal Handling Athletics Intimidation
+Ranger,d10,Dexterity or Wisdom,Strength Dexterity,Choose 3 from Animal Handling Nature Survival

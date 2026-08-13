@@ -1,8 +1,9 @@
 import customtkinter as ctk
 from PIL import Image
 import csv
-from PIL import Image, ImageGrab
+from PIL import Image, ImageDraw, ImageGrab
 import pywinstyles
+import generator
 
 
 colour1 = "#2E3A35"
@@ -38,7 +39,7 @@ class backgroundImage(ctk.CTkLabel):
         )
         self.configure(image=self.ctk_image)
 
-class TintOverlay(ctk.CTkToplevel):
+'''class TintOverlay(ctk.CTkToplevel):
     def __init__(self, master, opacity=0.4, tint_colour=colour4):
         super().__init__(master)
         self.master = master
@@ -61,9 +62,15 @@ class TintOverlay(ctk.CTkToplevel):
 
     def close(self):
         self.master.unbind("<Configure>")
-        self.destroy()
+        self.destroy()'''
 
+class MyFrame(ctk.CTkFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
 
+        # add widgets onto the frame, for example:
+        self.label = ctk.CTkLabel(self)
+        self.label.grid(row=0, column=0, padx=20)
 
 class App(ctk.CTk):
     """
@@ -81,15 +88,16 @@ class App(ctk.CTk):
         self.geometry("1440x960")
         self.appearanceMode = ctk.get_appearance_mode()
         if self.appearanceMode == "Dark":
-            bg = backgroundImage(self, "forestBackground.png")
-            bg.place(x=0, y=0, relwidth=1, relheight=1)
+            self.bg = backgroundImage(self, "forestBackground.png")
+            self.bg.place(x=0, y=0, relwidth=1, relheight=1)
         elif self.appearanceMode == "Light":
-            bg = backgroundImage(self, "BFG.jpeg")
-            bg.place(x=0, y=0, relwidth=1, relheight=1)
+            self.bg = backgroundImage(self, "BFG.jpeg")
+            self.bg.place(x=0, y=0, relwidth=1, relheight=1)
 
         #bg.place(x=0, y=0, relwidth=1, relheight=1)
 
         self.buildSidebar()
+        self.generationFrames()
 
 # ------------------------------------------------------------------
 # Sidebar
@@ -249,7 +257,7 @@ class App(ctk.CTk):
     def changeAppearanceMode(self, new_appearance_mode: str):
         ctk.set_appearance_mode(new_appearance_mode)
 
-    def loadHomebrewFromCSV(self, filePath="HomebrewValues.csv"):
+    def loadHomebrewFromCSV(self, filePath="Traits/HomebrewValues.csv"):
         lstHomebrewEntries = []
         try:
             with open(filePath, newline='', encoding='utf-8') as csvfile:
@@ -258,7 +266,7 @@ class App(ctk.CTk):
                     lstHomebrewEntries.append(row)
         except FileNotFoundError:
             pass
-        print(lstHomebrewEntries)
+        #print(lstHomebrewEntries)
         return lstHomebrewEntries
         
 
@@ -283,12 +291,12 @@ class App(ctk.CTk):
             homebrewBtn.pack(pady=2, padx=10) 
 
     def showOverlay(self):
-        overlayFrame = ctk.CTkFrame(self, fg_color=colour4, corner_radius=0)
-        overlayFrame.place(x=0, y=0, relwidth=1, relheight=1)
-        overlayFrame.lift()
-        pywinstyles.set_opacity(overlayFrame, value=0.5, color="#000000")
+        self.overlayFrame = ctk.CTkFrame(self, fg_color="#000000", corner_radius=0)
+        self.overlayFrame.place(x=0, y=0, relwidth=1, relheight=1)
+        self.overlayFrame.lift()
+        pywinstyles.set_opacity(self.overlayFrame, value=0.9, color="#000001")
 
-        popupFrame = ctk.CTkFrame(self, fg_color=colour2, width=300, height=200)
+        """popupFrame = ctk.CTkFrame(self, fg_color=colour2, width=300, height=200)
         popupFrame.place(relx=0.5, rely=0.5, anchor="center")
         popupFrame.pack_propagate(False)
         popupFrame.lift()
@@ -306,10 +314,32 @@ class App(ctk.CTk):
             command=lambda: self.HideOverlay(overlayFrame)
             )
 
-        btnCancel.pack(pady=2, padx=10)
+        btnCancel.pack(pady=2, padx=10)"""
 
     def HideOverlay(self, overlayFrame):
         overlayFrame.destroy()
+
+    def generationFrames(self):
+        self.statBox = ctk.CTkFrame(
+            self, width=125, 
+            height=155, 
+            fg_color=panelColour1, 
+            corner_radius=8,
+            border_width=3,
+            border_color=colour7
+            )
+        self.statBox.pack(side="left", padx=20, pady=20)
+        self.statBox.pack_propagate(False)
+
+        labelConstitution = ctk.CTkLabel(
+            self.statBox, 
+            text="Constitution", 
+            anchor="w",
+            fg_color="transparent", 
+            font=("Inter", 16, "bold")
+            )
+        labelConstitution.pack(pady=2, padx=20)
+        
 
 
 if __name__ == "__main__":

@@ -86,18 +86,21 @@ class App(ctk.CTk):
  
         self.title("D&D Character Generator")
         self.geometry("1440x960")
-        self.appearanceMode = ctk.get_appearance_mode()
+        """self.appearanceMode = ctk.get_appearance_mode()
         if self.appearanceMode == "Dark":
             self.bg = backgroundImage(self, "forestBackground.png")
             self.bg.place(x=0, y=0, relwidth=1, relheight=1)
         elif self.appearanceMode == "Light":
             self.bg = backgroundImage(self, "BFG.jpeg")
-            self.bg.place(x=0, y=0, relwidth=1, relheight=1)
+            self.bg.place(x=0, y=0, relwidth=1, relheight=1)"""
+        self.configure(fg_color="#000000")
 
         #bg.place(x=0, y=0, relwidth=1, relheight=1)
 
         self.buildSidebar()
+        self.nameFrame()
         self.generationFrames()
+        
 
 # ------------------------------------------------------------------
 # Sidebar
@@ -306,26 +309,80 @@ class App(ctk.CTk):
     def HideOverlay(self, overlayFrame):
         overlayFrame.destroy()
 
-    def generationFrames(self):
-        self.statBox = ctk.CTkFrame(
-            self, width=125, 
-            height=155, 
+    def nameFrame(self):
+        self.topBar = ctk.CTkFrame(
+            self, 
+            height=100, 
             fg_color=panelColour1, 
-            corner_radius=8,
-            border_width=3,
-            border_color=colour7
-            )
-        self.statBox.pack(side="left", padx=20, pady=20)
-        self.statBox.pack_propagate(False)
+            corner_radius=0
+        )
+        self.topBar.pack(side="top", fill="x")
+        self.topBar.pack_propagate(False)
 
-        labelConstitution = ctk.CTkLabel(
-            self.statBox, 
-            text="Constitution", 
-            anchor="w",
-            fg_color="transparent", 
-            font=("Inter", 16, "bold")
-            )
-        labelConstitution.pack(pady=2, padx=20)
+        strName = generator.CharacterGenerator().NameGeneration()
+        dctClass = generator.CharacterGenerator().generateTrait("Traits/ClassTraits.csv", [])
+        dctRace = generator.CharacterGenerator().generateTrait("Traits/RaceTraits.csv", [])
+    
+        strClassName = dctClass["Class"]
+        strRaceName = dctRace["Race"]
+        
+
+        lblName = ctk.CTkLabel(
+            self.topBar,    
+            text=strName,
+            font=("Inter", 30, "bold")
+        )
+        lblName.pack(pady=10, side="left", padx=20)
+
+        lblRace = ctk.CTkLabel(
+            self.topBar,
+            text=strRaceName,
+            font=("Inter", 10, "bold")
+        )
+        lblRace.pack(pady=10, side="left", padx=20)
+
+        lblClass = ctk.CTkLabel(
+            self.topBar,
+            text=strClassName,
+            font=("Inter", 10, "bold")
+        )
+        lblClass.pack(pady=10, side="left", padx=20)
+
+    def generationFrames(self):
+
+        dctStats = generator.CharacterGenerator().statGeneration()
+
+        for key, value in dctStats.items():
+            self.statBox = ctk.CTkFrame(
+                self, width=125, 
+                height=155, 
+                fg_color=panelColour1, 
+                corner_radius=8,
+                border_width=3,
+                border_color=colour7
+                )
+            self.statBox.pack(side="left", padx=30, pady=20)
+            self.statBox.pack_propagate(False)
+
+            lblStatName = ctk.CTkLabel(
+                self.statBox, 
+                text=key, 
+                anchor="w",
+                fg_color="transparent", 
+                font=("Inter", 16, "bold")
+                )
+            lblStatName.pack(pady=5, padx=20)
+
+            lblStatValue = ctk.CTkLabel(
+                self.statBox, 
+                text=value, 
+                anchor="w",
+                fg_color="transparent", 
+                font=("Inter", 75, "bold")
+                )
+            lblStatValue.pack(pady=5, padx=20)
+
+
         
 
 

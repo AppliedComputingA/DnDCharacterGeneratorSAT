@@ -38,7 +38,7 @@ class CharacterGenerator():
         except FileNotFoundError:
             pass
 
-        print(lstEntries)
+        #print(lstEntries)
         roll = random.randint(1, len(lstEntries)) - 1
         traitValue = lstEntries[roll]
         #print(roll)
@@ -96,6 +96,28 @@ class CharacterGenerator():
         axis2 = ["Good", "Neutral", "Evil"]
         characterAlignment = axis1[intRoll1 - 1] + " " + axis2[intRoll2 - 1]
         return characterAlignment
+
+    def NameGeneration(self):
+        """
+        This function generates a random name for the character.
+        This will be done by rolling a d6 and assigning a name based on the roll.
+        """
+        location = "Traits/NameTraits.csv"
+        lstEntries = []
+        try:
+            with open(location, newline='', encoding='utf-8') as csvfile:
+                reader = csv.DictReader(csvfile)
+                for row in reader:
+                    lstEntries.append(row)
+        except FileNotFoundError:
+            pass
+        roll = random.randint(1, len(lstEntries)) - 1
+        nameValue = lstEntries[roll]
+        nameString = nameValue["Name"]
+        #print(roll)
+        #print(len(lstEntries))
+        #print(nameValue)
+        return nameString
 
     def addHomebrew(self, type, name):
         """

@@ -14,10 +14,11 @@ colour5 = "#873F30"
 colour6 = "#3B6E5E"
 colourButtonHover = "#30594c"
 colourButtonHover2 = "#07412B"
+colourButtonHover3 = "#BB5E4B"
 colour7 = "#0E7D54"
 textColour1 = "#FFFFFF"
 panelColour1 = "#242424"
-buttonColour1 = "#6FBF9E"
+buttonColour1 = "#62BD97"
 buttonColour2 = "#E2725B"
 
 ctk.set_appearance_mode("dark")
@@ -85,7 +86,7 @@ class App(ctk.CTk):
         super().__init__()
  
         self.title("D&D Character Generator")
-        self.geometry("1440x960")
+        self.geometry("1440x1000")
         """self.appearanceMode = ctk.get_appearance_mode()
         if self.appearanceMode == "Dark":
             self.bg = backgroundImage(self, "forestBackground.png")
@@ -99,7 +100,9 @@ class App(ctk.CTk):
 
         self.buildSidebar()
         self.nameFrame()
+        self.statFrames()
         self.generationFrames()
+       
         
 
 # ------------------------------------------------------------------
@@ -229,16 +232,16 @@ class App(ctk.CTk):
             )
 
         btnAdd = ctk.CTkButton(
-                    self.sidebar, text="Add", 
-                    font=("Inter", 16, "bold"), 
-                    fg_color=colour2, 
+                    self.sidebar, text="Add New", 
+                    font=("Inter", 18, "bold"), 
+                    fg_color=buttonColour1, 
                     hover_color=colourButtonHover2,
                     border_color=colour7,
-                    border_width=2,
+                    border_width=3,
                     corner_radius=8, 
                     height=40, 
                     width=120,
-                    #anchor="w",
+                    anchor="w",
                     border_spacing=10,
                     command=self.showOverlay
                     )
@@ -255,7 +258,7 @@ class App(ctk.CTk):
         btnSkills.pack(pady=intFilterYPad, padx=intFilterXPad)
         self.lblHomebrew.pack(pady=20, padx=intFilterXPad)
         self.HomebrewSidebar()
-        btnAdd.pack(pady=2, padx=intFilterXPad, anchor="e")
+        btnAdd.pack(pady=2, padx=intFilterXPad, anchor="w")
 
     def changeAppearanceMode(self, new_appearance_mode: str):
         ctk.set_appearance_mode(new_appearance_mode)   
@@ -284,6 +287,7 @@ class App(ctk.CTk):
         self.overlayFrame = ctk.CTkFrame(self, fg_color="#000000", corner_radius=0)
         self.overlayFrame.place(x=0, y=0, relwidth=1, relheight=1)
         self.overlayFrame.lift()
+        #For some reason shows an error, cannot find i way to prevent this, however works completely as intended
         pywinstyles.set_opacity(self.overlayFrame, value=0.9, color="#000001")
 
         """popupFrame = ctk.CTkFrame(self, fg_color=colour2, width=300, height=200)
@@ -319,14 +323,14 @@ class App(ctk.CTk):
         self.topBar.pack(side="top", fill="x")
         self.topBar.pack_propagate(False)
 #-------------------------------------------------------------------------------------------------------------------
-        strName = generator.CharacterGenerator().NameGeneration()
+        """strName = generator.CharacterGenerator().NameGeneration()
         dctClass = generator.CharacterGenerator().generateTrait("Traits/ClassTraits.csv", [])
         dctRace = generator.CharacterGenerator().generateTrait("Traits/RaceTraits.csv", [])
     
 
 
         strClassName = dctClass["Class"]
-        strRaceName = dctRace["Race"]
+        strRaceName = dctRace["Race"]"""
 #-------------------------------------------------------------------------------------------------------------------
         rowFrame = ctk.CTkFrame(self.topBar, fg_color="transparent")
         rowFrame.pack(side="left", padx=20, pady=5, anchor="w")
@@ -335,31 +339,31 @@ class App(ctk.CTk):
         nameRow.pack(side="top", anchor="w")
         
 
-        lblName = ctk.CTkLabel(
+        self.lblName = ctk.CTkLabel(
             nameRow,    
-            text=strName,
+            text="Name",
             font=("Inter", 50, "bold")
         )
-        lblName.pack(side="left")
+        self.lblName.pack(side="left")
 
         traitRow = ctk.CTkFrame(rowFrame, fg_color="transparent")
         traitRow.pack(side="left", anchor="w")
 
-        lblRace = ctk.CTkLabel(
+        self.lblRace = ctk.CTkLabel(
             traitRow,
-            text=strRaceName,
+            text="Race",
             font=("Inter", 20, "bold")
         )
-        lblRace.pack(pady=0, side="left", padx=5)
+        self.lblRace.pack(pady=0, side="left", padx=5)
 
-        lblClass = ctk.CTkLabel(
+        self.lblClass = ctk.CTkLabel(
             traitRow,
-            text=strClassName,
+            text="Class",
             font=("Inter", 20, "bold")
         )
-        lblClass.pack(pady=0, side="left", padx=5)
+        self.lblClass.pack(pady=0, side="left", padx=5)
 
-    def generationFrames(self):
+    def statFrames(self):
 
         self.frmGenerationFrame = ctk.CTkFrame(self, fg_color="transparent")
         self.frmGenerationFrame.pack(side="top", padx=0, pady=0, anchor="w")
@@ -368,6 +372,7 @@ class App(ctk.CTk):
         row1.pack(side="top", fill="x", anchor="w")
 
         dctStats = generator.CharacterGenerator().statGeneration()
+        self.lblStatValues = {}
 
         for i, (key, value) in enumerate(dctStats.items()):
             row1.columnconfigure(i, weight=1, uniform="statcol")
@@ -394,12 +399,15 @@ class App(ctk.CTk):
 
             lblStatValue = ctk.CTkLabel(
                 self.statBox, 
-                text=value, 
+                text="", 
                 anchor="w",
                 fg_color="transparent", 
-                font=("Inter", 60, "bold")
+                font=("Inter", 60, "bold")  
                 )
             lblStatValue.pack(pady=5, anchor="center")
+            self.lblStatValues[key] = lblStatValue
+
+    def generationFrames(self):
 
         row2 = ctk.CTkFrame(self.frmGenerationFrame, fg_color="transparent")
         row2.pack(side="top", anchor="w")
@@ -451,39 +459,254 @@ class App(ctk.CTk):
         self.frmSkills.pack(side="left", padx=30, pady=20)
         self.frmSkills.pack_propagate(False)
 
+        """self.frmMiniGenerationFrame = ctk.CTkFrame(row3, fg_color="transparent")
+        self.frmMiniGenerationFrame.pack(side="top", padx=0, pady=0, anchor="w")"""
+
         self.frmMiniGenerationFrame = ctk.CTkFrame(row3, fg_color="transparent")
-        self.frmMiniGenerationFrame.pack(side="top", padx=0, pady=0, anchor="w")
+        self.frmMiniGenerationFrame.pack(side="left", anchor="n", padx=30, pady=20)
 
         miniRow1 = ctk.CTkFrame(self.frmMiniGenerationFrame, fg_color="transparent")
-        miniRow1.pack(side="top", anchor="w")
+        miniRow1.pack(side="top", anchor="w", pady=(0, 10))
 
         self.frmAllignment = ctk.CTkFrame(
             miniRow1, width=250, 
-            height=140, 
+            height=160, 
             fg_color=panelColour1, 
             corner_radius=8,
             border_width=3,
             border_color=colour7
             )
-        self.frmAllignment.pack(side="left", padx=30, pady=15)
-        self.frmAllignment.pack_propagate(False)
-
-        self.frmAllignment.configure(height=150)
+        self.frmAllignment.pack(side="left")
+        #no idea why but this and Notes need gid propagation, they break elsewise
+        self.frmAllignment.grid_propagate(False)
 
         miniRow2 = ctk.CTkFrame(self.frmMiniGenerationFrame, fg_color="transparent")
         miniRow2.pack(side="top", anchor="w")
         
 
-        self.frmNotes = ctk.CTkScrollableFrame(
+        self.frmNotes = ctk.CTkFrame(
             miniRow2, width=250, 
-            height=140, 
+            height=160, 
             fg_color=panelColour1, 
             corner_radius=8,
             border_width=3,
             border_color=colour7
             )
-        self.frmNotes.pack_propagate(False)
-        self.frmNotes.pack(side="left", padx=30, pady=0)
+        self.frmNotes.grid_propagate(False)
+        self.frmNotes.pack(side="left")
+
+        self.GenerationButtons()
+        self.generationLabels()
+        self.generationInformation()
+
+    def GenerationButtons(self):
+
+        row4 = ctk.CTkFrame(self.frmGenerationFrame, fg_color="transparent")
+        row4.pack(side="top", anchor="w", fill = "x")
+
+        self.btnImport =  ctk.CTkButton(
+            row4, 
+            text="Import", 
+            font=("Inter", 20, "bold"), 
+            fg_color=buttonColour1, 
+            hover_color=colourButtonHover2,
+            border_color=colour7,
+            border_width=3,
+            corner_radius=8, 
+            height=50, 
+            width=200,
+            anchor="w",
+            border_spacing=10,
+            #command=self.showOverlay
+            )
+        self.btnImport.pack(side="left", padx = 20)
+
+        self.btnExport =  ctk.CTkButton(
+            row4, 
+            text="Export", 
+            font=("Inter", 20, "bold"), 
+            fg_color=buttonColour1, 
+            hover_color=colourButtonHover2,
+            border_color=colour7,
+            border_width=3,
+            corner_radius=8, 
+            height=50, 
+            width=200,
+            anchor="w",
+            border_spacing=10,
+            #command=self.showOverlay
+            )
+        self.btnExport.pack(side="left", padx = 20)
+
+        self.btnGenerate =  ctk.CTkButton(
+            row4, 
+            text="Generate", 
+            font=("Inter", 20, "bold"), 
+            fg_color=buttonColour2, 
+            hover_color=colourButtonHover3,
+            border_color=colour5,
+            border_width=3,
+            corner_radius=8, 
+            height=50, 
+            width=200,
+            anchor="w",
+            border_spacing=10,
+            command=self.generateInformation
+            )
+        self.btnGenerate.pack(side = "right", padx = 20)
+
+    def generationLabels(self):
+        self.lblClassDetails = ctk.CTkLabel(
+            self.frmClassDetails, 
+            text="Class Details", 
+            anchor="w",
+            fg_color="transparent", 
+            font=("Inter", 30, "bold")
+        )
+        self.lblClassDetails.grid(row=0, column=0, sticky="nw", padx=5, pady=0)
+
+        self.lblBackground = ctk.CTkLabel(
+            self.frmBackground, 
+            text="Background &\nPersonality", 
+            anchor="w",
+            fg_color="transparent", 
+            font=("Inter", 20, "bold")
+        )
+        self.lblBackground.grid(row=0, column=0, sticky="nw", padx=5, pady=0)
+
+        self.lblAppearance = ctk.CTkLabel(
+            self.frmAppearance, 
+            text="Appearance", 
+            anchor="w",
+            fg_color="transparent", 
+            font=("Inter", 20, "bold")
+        )
+        self.lblAppearance.grid(row=0, column=0, sticky="nw", padx=5, pady=0)
+
+        self.lblSkills = ctk.CTkLabel(
+            self.frmSkills, 
+            text="Skills", 
+            anchor="w",
+            fg_color="transparent", 
+            font=("Inter", 20, "bold")
+        )
+        self.lblSkills.grid(row=0, column=0, sticky="nw", padx=5, pady=0)
+
+        self.lblNotes = ctk.CTkLabel(
+            self.frmNotes, 
+            text="Notes", 
+            anchor="w",
+            fg_color="transparent", 
+            font=("Inter", 20, "bold")
+        )
+        self.lblNotes.grid(row=0, column=0, sticky="nw", padx=10, pady=5)
+
+        self.lblAllignment = ctk.CTkLabel(
+            self.frmAllignment, 
+            text="Allignment", 
+            anchor="w",
+            fg_color="transparent", 
+            font=("Inter", 20, "bold")
+        )
+        self.lblAllignment.grid(row=0, column=0, sticky="nw", padx=10, pady=5)
+
+    def generationInformation(self):
+        self.lblClassInfo = ctk.CTkLabel(
+            self.frmClassDetails, 
+            text="", 
+            anchor="w",
+            fg_color="transparent", 
+            font=("Inter", 16, "bold"),
+            wraplength=460
+        )
+        self.lblClassInfo.grid(row=1, column=0, sticky="nw", padx=10, pady=0)
+
+        self.lblBackgroundInfo = ctk.CTkLabel(
+            self.frmBackground, 
+            text="", 
+            anchor="w",
+            fg_color="transparent", 
+            font=("Inter", 16, "bold"),
+            wraplength=460
+        )
+        self.lblBackgroundInfo.grid(row=1, column=0, sticky="nw", padx=5, pady=0)
+
+        self.lblAppearanceInfo = ctk.CTkLabel(
+            self.frmAppearance, 
+            text="", 
+            anchor="w",
+            fg_color="transparent", 
+            font=("Inter", 16, "bold"),
+            wraplength=460
+        )
+        self.lblAppearanceInfo.grid(row=1, column=0, sticky="nw", padx=5, pady=0)
+
+        self.lblSkillsInfo = ctk.CTkLabel(
+            self.frmSkills, 
+            text="", 
+            anchor="w",
+            fg_color="transparent", 
+            font=("Inter", 16, "bold"),
+            wraplength=230
+        )
+        self.lblSkillsInfo.grid(row=1, column=0, sticky="nw", padx=5, pady=0)
+
+        self.lblNotesInfo = ctk.CTkLabel(
+            self.frmNotes, 
+            text="", 
+            anchor="w",
+            fg_color="transparent", 
+            font=("Inter", 16, "bold"),
+            wraplength=230
+        )
+        self.lblNotesInfo.grid(row=1, column=0, sticky="nw", padx=10, pady=5)
+
+        self.lblAllignmentInfo = ctk.CTkLabel(
+            self.frmAllignment, 
+            text="", 
+            anchor="w",
+            fg_color="transparent", 
+            font=("Inter", 16, "bold"),
+            wraplength=230
+        )
+        self.lblAllignmentInfo.grid(row=1, column=0, sticky="nw", padx=10, pady=5)
+
+    def generateInformation(self):
+        strName = generator.CharacterGenerator().NameGeneration()
+        dctClass = generator.CharacterGenerator().generateClass()
+        dctRace = generator.CharacterGenerator().generateRace()
+        dctStats = generator.CharacterGenerator().statGeneration()
+        dctBackground = generator.CharacterGenerator().generateBackground()
+        dctPersonality = generator.CharacterGenerator().generatePersonality()
+        dctAppearance = generator.CharacterGenerator().generateAppearance()
+        strAlignment = generator.CharacterGenerator().alignmentGeneration()
+
+        """strClassName = dctClass["Class"]
+        strRaceName = dctRace["Race"]
+        strClassDescription=dctClass["Description"]
+        strRaceDescription=dctRace["Description"]"""
+        
+
+        self.lblName.configure(text=strName)
+        self.lblRace.configure(dctRace["Race"])
+        self.lblClass.configure(dctClass["Class"])
+
+        for key, value in dctStats.items():
+            self.lblStatValues[key].configure(text=value)
+
+        self.lblClassInfo.configure(text=dctClass["Description"])
+        self.lblBackgroundInfo.configure(
+            text=f"{dctBackground['Background']}\n\n{dctPersonality['Personality']}")
+        self.lblAppearanceInfo.configure(text=dctAppearance["Appearance"])
+        #print(dctAppearance)
+        self.lblAllignmentInfo.configure(text=strAlignment)
+
+        
+        
+
+        
+
+
         
         
 

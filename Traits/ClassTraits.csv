@@ -1,7 +1,13 @@
-Class,HitDie,PrimaryAbility,SavingThrows,StartingSkills
-Fighter,d10,Strength or Dexterity,Strength Constitution,Choose 2 from Acrobatics Athletics Intimidation
-Wizard,d6,Intelligence,Intelligence Wisdom,Choose 2 from Arcana History Investigation
-Rogue,d8,Dexterity,Dexterity Intelligence,Choose 4 from Acrobatics Deception Stealth Sleight of Hand
-Cleric,d8,Wisdom,Wisdom Charisma,Choose 2 from History Insight Medicine Religion
-Barbarian,d12,Strength,Strength Constitution,Choose 2 from Animal Handling Athletics Intimidation
-Ranger,d10,Dexterity or Wisdom,Strength Dexterity,Choose 3 from Animal Handling Nature Survival
+Class,Description
+Barbarian,A mighty warrior who is powered by a primal force of the multiverse that manifest as a Rage.
+Ranger,"Is honed with deadly focus and harness primal powers to protect the world from the ravages of monsters and tyrants."
+Bard,"An expert in inspiring others, soothing hurts, disheartening foes, and creating illusions."
+Cleric,"Can reach out to the divine magic of the Outer Planes and channel it to bolster people and battle foes."
+Druid,"Calls on the forces of nature, harnessing magic to heal, transform into animals, and wield elemental destruction."
+Fighter,"Has an unparalleled prowess with weapons and armor, and is well acquainted with death, both meting it out and defying it."
+Monk,"Focuses their internal reservoirs of power to create extraordinary, even supernatural, effects."
+Paladin,"Lives on the front lines of the cosmic struggle, united by their oath against the forces of annihilation."
+Rouge,"Has a knack for finding the solution to just about any problem, prioritizing subtle strikes over brute strength."
+Sorcerer,"Harnesses and channels the raw, roiling power of innate magic that is stamped into their very being."
+Warlock,"Has a quest for knowledge that lies hidden in the fabric of the multiverse, piecing together arcane secrets to bolster their own power."
+Wizard,"Cast spells of explosive fire, arcing lightning, subtle deception, and spectacular transformations."

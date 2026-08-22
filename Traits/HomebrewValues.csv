@@ -1,7 +1,6 @@
-Type,Name
-Race,Kobold
-Class,Artificer
-Homer,Simpson
-Neuclear,Physicist
-Race,Orc
-Race,Dragonborn
+Type,Name,Description
+Race,Kobold,Dinosaur
+Homer,Simpson,Donut
+Neuclear,Physicist,Just so Green
+Race,Orc,Shrek
+Race,Dragonborn,Fireball breath

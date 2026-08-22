@@ -34,7 +34,12 @@ class CharacterGenerator():
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     if row["Type"] == traitSet:
-                        lstEntries.append(row)
+                        # Normalize so it matches the official CSV's key shape
+                        normalizedRow = {
+                            traitSet: row["Name"],
+                            "Description": row.get("Description", "")
+                        }
+                        lstEntries.append(normalizedRow)
         except FileNotFoundError:
             pass
 
@@ -43,8 +48,14 @@ class CharacterGenerator():
         traitValue = lstEntries[roll]
         #print(roll)
         #print(len(lstRaceEntries))
-        #print(raceValue)
+        #print(traitValue)
         return traitValue
+        
+
+
+
+
+
 
     # ------------------------------------------------------------------
     # Functions to generate each trait type.
@@ -180,8 +191,6 @@ class CharacterGenerator():
         #print(lstHomebrewEntries)
         lstSortedHomebrewList = sorted(lstHomebrewEntries, key=lambda x: x['Name'])
         return lstSortedHomebrewList
-
-
     
 
 if __name__ == "__main__":
@@ -251,3 +260,4 @@ if __name__ == "__main__":
 
         Works and expected.
         """
+    

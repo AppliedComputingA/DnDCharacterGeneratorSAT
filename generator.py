@@ -50,12 +50,39 @@ class CharacterGenerator():
         #print(len(lstRaceEntries))
         #print(traitValue)
         return traitValue
+
+    def generateFeatureList(self, fileLocation, traitSet):
+        """
+        This function will create the dictonary from generateTrait but return the entire thing allowing the filters to pull from all possible options.
+        """
+        location = fileLocation
+        if location is None:
+            raise ValueError(f"File location not found")
+
+        lstEntries = []
+        try:
+            with open(location, newline='', encoding='utf-8') as csvfile:
+                reader = csv.DictReader(csvfile)
+                for row in reader:
+                    lstEntries.append(row)
+        except FileNotFoundError:
+            pass
+
+        try:
+            with open("Traits/HomebrewValues.csv", newline='', encoding='utf-8') as csvfile:
+                reader = csv.DictReader(csvfile)
+                for row in reader:
+                    if row["Type"] == traitSet:
+                        # Normalize so it matches the official CSV's key shape
+                        normalizedRow = {
+                            traitSet: row["Name"],
+                            "Description": row.get("Description", "")
+                        }
+                        lstEntries.append(normalizedRow)
+        except FileNotFoundError:
+            pass
+        return lstEntries
         
-
-
-
-
-
 
     # ------------------------------------------------------------------
     # Functions to generate each trait type.
@@ -82,8 +109,54 @@ class CharacterGenerator():
     def generateAppearance(self):
         return self.generateTrait(self.AppearanceLocation, "Appearance")
 
-    
+    # ------------------------------------------------------------------
+    # Functions to generate each trait type.
+    # ------------------------------------------------------------------
 
+    def generateRaceList(self):
+        rows = self.generateFeatureList(self.raceLocation, "Race")
+        return [row["Race"] for row in rows]
+    
+    def generateClassList(self):
+        rows = self.generateFeatureList(self.classLocation, "Class")
+        return [row["Class"] for row in rows]
+
+    def generateBackgroundList(self):
+        rows = self.generateFeatureList(self.backgroundLocation, "Background")
+        return [row["Background"] for row in rows]
+
+    def generateHomebrewList(self):
+        rows = self.generateFeatureList(self.HomebrewLocation, "Homebrew")
+        return [row["Homebrew"] for row in rows]
+    
+    def generateNameList(self):
+        rows = self.generateFeatureList(self.NameLocation, "Name")
+        return [row["Name"] for row in rows]
+
+    def generatePersonalityList(self):
+        rows = self.generateFeatureList(self.PersonalityLocation, "Personality")
+        return [row["Personality"] for row in rows]
+    
+    def generateAppearanceList(self):
+        rows = self.generateFeatureList(self.AppearanceLocation, "Appearance")
+        return [row["Appearance"] for row in rows]
+
+    def generateAllignmentList(self):
+        axis1 = ["Lawful", "Neutral", "Chaotic"]
+        axis2 = ["Good", "Neutral", "Evil"]
+
+        lstEntries = []
+
+        for i in axis1:
+            for e in axis2:
+                lstEntries.append(f"{i} {e}")
+
+        return lstEntries
+
+    def generateSkillList(self):
+        self.lstSkills = ["Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History", "Insight", "Intimidation", "Investigation", "Medicine, Nature", "Perception", "Performance", "Persuasion, Religion", "Sleight of Hand, Stealth", "Survival"]
+        return self.lstSkills
+    
     def statGeneration(self):
         """
         This function generates a random stat value between 1 and 18 for each of the six ability scores.

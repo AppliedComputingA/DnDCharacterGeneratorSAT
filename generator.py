@@ -216,12 +216,12 @@ class CharacterGenerator():
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writerow({"Type": type, "Name": name, "Description": description})
 
-    def editHomebrew(self, oldType, oldName, newType, newName):
+    def editHomebrew(self, oldType, oldName, newType, newName, newdescription):
         """
         This function edits a homebrew trait in the HomebrewValues.csv file.
         This will be done by reading the CSV file and writing a new CSV file with the updated values.
         """
-        fieldnames = ["Type", "Name"]
+        fieldnames = ["Type", "Name", "Description"]
         lstEntries = []
         try:
             with open("Traits/HomebrewValues.csv", newline='', encoding='utf-8') as csvfile:
@@ -230,16 +230,22 @@ class CharacterGenerator():
                     if row["Type"] == oldType and row["Name"] == oldName:
                         row["Type"] = newType
                         row["Name"] = newName
+                        row["Description"] = newdescription
                     lstEntries.append(row)
         except FileNotFoundError:
             pass
 
-    def deleteHomebrew(self, type, name):
+        with open("Traits/HomebrewValues.csv", "w", newline='', encoding='utf-8') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(lstEntries)
+
+    def deleteHomebrew(self, type, name, description):
         """
         This function deletes a homebrew trait from the HomebrewValues.csv file.
         This will be done by reading the CSV file and writing a new CSV file without the deleted values.
         """
-        fieldnames = ["Type", "Name"]
+        fieldnames = ["Type", "Name", "Description"]
         lstEntries = []
         try:
             with open("Traits/HomebrewValues.csv", newline='', encoding='utf-8') as csvfile:
@@ -250,6 +256,11 @@ class CharacterGenerator():
                     lstEntries.append(row)
         except FileNotFoundError:
             pass
+
+        with open("Traits/HomebrewValues.csv", "w", newline='', encoding='utf-8') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(lstEntries)
 
     def applyFilters(self, traitSet, filters):
         #left here as placeholder
@@ -267,6 +278,8 @@ class CharacterGenerator():
         #print(lstHomebrewEntries)
         lstSortedHomebrewList = sorted(lstHomebrewEntries, key=lambda x: x['Name'])
         return lstSortedHomebrewList
+
+    
     
 
 if __name__ == "__main__":

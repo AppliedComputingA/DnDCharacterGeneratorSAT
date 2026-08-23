@@ -5,6 +5,9 @@ from PIL import Image, ImageDraw, ImageGrab
 import pywinstyles
 import generator
 
+# -------------------------------------------------------
+# All Colours used repeatedly
+# -------------------------------------------------------
 
 colour1 = "#2E3A35"
 colour2 = "#1A2420"
@@ -112,11 +115,14 @@ class App(ctk.CTk):
     
         
 
-# ------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------
 # Sidebar
-# ------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------
 
     def buildSidebar(self):
+        """
+        This Function builds the sidebar, creating the label and buttons
+        """
         self.sidebar = ctk.CTkScrollableFrame(
             self, width=260, fg_color=panelColour1, corner_radius=0
         )
@@ -127,6 +133,10 @@ class App(ctk.CTk):
             fg_color="transparent", font=("Inter", 20, "bold")
         )
         self.filterLabel.pack()
+
+        self.filterListFrame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
+        self.filterListFrame.pack(fill="x")
+        self.buildFilterDropdowns()
 
         characterList = generator.CharacterGenerator().generateClassList()
         raceList = generator.CharacterGenerator().generateRaceList()
@@ -184,10 +194,14 @@ class App(ctk.CTk):
         """
 
         self.lblHomebrew.pack(pady=20, padx=intFilterXPad)
+
+        self.homebrewListFrame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
+        self.homebrewListFrame.pack(fill="x")
+
         self.HomebrewSidebar()
         btnAdd.pack(pady=2, padx=intFilterXPad, anchor="w")
 
-    def buildDropdown(self, parent, title, options):    
+    def buildDropdown(self, parent, title, options):        
         frmDropdown = ctk.CTkFrame(parent, fg_color="transparent")
         frmDropdown.pack(fill="x", padx=10, pady=2)
 
@@ -227,10 +241,13 @@ class App(ctk.CTk):
         ctk.set_appearance_mode(new_appearance_mode)   
 
     def HomebrewSidebar(self):
+        for widget in self.homebrewListFrame.winfo_children():
+            widget.destroy()
+
         self.homebrewEntries = generator.CharacterGenerator().loadHomebrew()
 
         for entry in self.homebrewEntries:
-            self.buildHomebrewDropdown(self.sidebar, entry) 
+             self.buildHomebrewDropdown(self.homebrewListFrame, entry) 
 
     def buildHomebrewDropdown(self, parent, entry):
         frmDropdown = ctk.CTkFrame(parent, fg_color="transparent")
@@ -271,16 +288,47 @@ class App(ctk.CTk):
             width=120,
             anchor="w",
             border_spacing=10,
-            #command=self.showEditOverlay
+            command=lambda:self.showEditOverlay(entry)
             )
         btnEdit.pack(side="right", anchor="w", padx=5, pady=(5, 5))
 
-    def showOverlay(self):
+    def buildFilterDropdowns(self):
+        """
+        This function is being used to rebuild the dropdown menus used for filtering after a homebrew value is altered
+        """
+
+        for widget in self.filterListFrame.winfo_children():
+            widget.destroy()
+
+        self.filterCheckboxes = {}
+
+        characterList = generator.CharacterGenerator().generateClassList()
+        raceList = generator.CharacterGenerator().generateRaceList()
+        backgroundList = generator.CharacterGenerator().generateBackgroundList()
+        appearanceList = generator.CharacterGenerator().generateAppearanceList()
+        allignmentList = generator.CharacterGenerator().generateAllignmentList()
+        skillsList = generator.CharacterGenerator().generateSkillList()
+
+        self.buildDropdown(self.filterListFrame, "Race", raceList)
+        self.buildDropdown(self.filterListFrame, "Class", characterList)
+        self.buildDropdown(self.filterListFrame, "Personality", backgroundList)
+        self.buildDropdown(self.filterListFrame, "Appearance", appearanceList)
+        self.buildDropdown(self.filterListFrame, "Alignment", allignmentList)
+        self.buildDropdown(self.filterListFrame, "Skills", skillsList)
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Add Homebrew Popup
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    def tintOverlay(self):
         self.overlayFrame = ctk.CTkFrame(self, fg_color="#000000", corner_radius=0)
         self.overlayFrame.place(x=0, y=0, relwidth=1, relheight=1)
         self.overlayFrame.lift()
         #For some reason shows an error, cannot find a way to prevent this, however works completely as intended with no errors
         pywinstyles.set_opacity(self.overlayFrame, value=0.999, color="#000001")
+    
+    def showOverlay(self):
+        self.tintOverlay()
 
         self.popupFrame = ctk.CTkFrame(
             self, 
@@ -492,10 +540,333 @@ class App(ctk.CTk):
         else:
             generator.CharacterGenerator().addHomebrew(category, name, description)
             self.hideOverlay()
+            self.HomebrewSidebar()
+            self.buildFilterDropdowns()
 
     def hideOverlay(self):
         self.popupFrame.destroy()
         self.overlayFrame.destroy()
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Edit Homebrew Popup
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    def showEditOverlay(self, editEntry):
+        self.tintOverlay()
+
+        self.editPopupFrame = ctk.CTkFrame(
+            self, 
+            fg_color=panelColour2, 
+            width=1000, 
+            height=650,
+            corner_radius=12,
+            border_width=3,
+            border_color=colour8
+        )
+        self.editPopupFrame.place(relx=0.5, rely=0.5, anchor="center")
+        self.editPopupFrame.pack_propagate(False)
+        self.editPopupFrame.lift()
+
+        lblEditTitle = ctk.CTkLabel(
+            self.editPopupFrame, 
+            text="Edit Homebrew",
+            font=("Inter", 30, "bold")
+        )
+        lblEditTitle.pack(side="top", anchor="w", padx=20, pady=(15, 10))
+
+        editCategoryRow = ctk.CTkFrame(self.editPopupFrame, fg_color="transparent")
+        editCategoryRow.pack(side="top", anchor="w", padx=20, pady=(0, 2))
+
+        lblEditCategoryMain = ctk.CTkLabel(
+            editCategoryRow, 
+            text="CATERGORY",
+            font=("Inter", 12, "bold"),
+            text_color=textColour1
+        )
+        lblEditCategoryMain.pack(side="left")
+
+        lblEditCategorySide = ctk.CTkLabel(
+            editCategoryRow, 
+            text="*",
+            font=("Inter", 12, "bold"),
+            text_color=textColour2
+        )
+
+        self.editCategoryOptions = ["Race", "Class", "Background", "Personality", "Appearance", "Alignment", "Skills"]
+        self.selectedEditCategory = ctk.StringVar(value=editEntry.get("Type", self.editCategoryOptions[0]))
+
+        editCategorySelectRow = ctk.CTkFrame(self.editPopupFrame, fg_color="transparent")
+        editCategorySelectRow.pack(side="top", anchor="w", padx=20, pady=(0, 5))
+
+        self.editCategoryDropdown = ctk.CTkOptionMenu(
+            editCategorySelectRow,
+            values=self.editCategoryOptions,
+            variable=self.selectedEditCategory,
+            font=("Inter", 16, "bold"),
+            fg_color=colour6,
+            button_color=colourButtonHover,
+            button_hover_color=colourButtonHover2,
+            dropdown_fg_color=panelColour1,
+            dropdown_hover_color=colourButtonHover,
+            corner_radius=8,
+            width=963,
+            height=39
+        )
+        self.editCategoryDropdown.pack()
+
+        editNameRow = ctk.CTkFrame(self.editPopupFrame, fg_color="transparent")
+        editNameRow.pack(side="top", anchor="w", padx=20, pady=(0, 0))
+
+        lblEditNameMain = ctk.CTkLabel(
+            editNameRow, 
+            text="NAME",
+            font=("Inter", 12, "bold"),
+            text_color=textColour1
+        )
+        lblEditNameMain.pack(side="left")
+
+        self.lblEditNameSide = ctk.CTkLabel(
+            editNameRow, 
+            text="*",
+            font=("Inter", 12, "bold"),
+            text_color=textColour1
+        )   
+        self.lblEditNameSide.pack(side="left")
+
+        editNameEntryRow = ctk.CTkFrame(self.editPopupFrame, fg_color="transparent")
+        editNameEntryRow.pack(side="top", anchor="w", padx=20, pady=(0, 5))
+
+        self.editNameEntry = ctk.CTkEntry(
+            editNameEntryRow, 
+            placeholder_text="e.g. Kobold",
+            placeholder_text_color=textColour1,
+            fg_color="transparent",
+            border_color=colour8,
+            corner_radius=8,
+            width=963,
+            height=39
+        )
+        self.editNameEntry.pack()
+        self.editNameEntry.insert(0, editEntry.get("Name", ""))
+
+        editDescriptionRow = ctk.CTkFrame(self.editPopupFrame, fg_color="transparent")
+        editDescriptionRow.pack(side="top", anchor="w", padx=20, pady=(0, 0))
+
+        lblEditDescriptionMain = ctk.CTkLabel(
+            editDescriptionRow, 
+            text="DESCRIPTION",
+            font=("Inter", 12, "bold"),
+            text_color=textColour1
+        )
+        lblEditDescriptionMain.pack(side="left")
+
+        self.lblEditDescriptionSide = ctk.CTkLabel(
+            editDescriptionRow, 
+            text="*",
+            font=("Inter", 12, "bold"),
+            text_color=textColour1
+        )   
+        self.lblEditDescriptionSide.pack(side="left")
+
+        editDescriptionEntryRow = ctk.CTkFrame(self.editPopupFrame, fg_color="transparent")
+        editDescriptionEntryRow.pack(side="top", anchor="w", padx=20, pady=(0, 5))
+
+        self.editDescriptionEntry = ctk.CTkTextbox(
+            editDescriptionEntryRow,
+            fg_color="transparent",
+            border_color=colour8,
+            border_width=2,
+            corner_radius=8,
+            width=963,
+            height=292,
+            font=("Inter", 14)
+        )
+        self.editDescriptionEntry.pack()
+        self.editDescriptionEntry.insert("1.0", editEntry.get("Description", ""))
+
+        editWarningRow = ctk.CTkFrame(self.editPopupFrame, fg_color="transparent")
+        editWarningRow.pack(side="top", anchor="w", padx=20, pady=(0, 0))
+
+        self.lblEditWarning = ctk.CTkLabel(
+            editWarningRow, 
+            text="THIS FIELD IS REQUIRED*",
+            font=("Inter", 12, "bold"),
+            text_color=textColour1
+        )
+        self.lblEditWarning.pack(side="left")
+
+        editButtonsRow = ctk.CTkFrame(self.editPopupFrame, fg_color="transparent")
+        editButtonsRow.pack(side="top", anchor="w", padx=20, pady=(5, 5), fill="x")
+
+        self.btnSaveHomebrew = ctk.CTkButton(
+            editButtonsRow, 
+            text="Save Changes", 
+            font=("Inter", 20, "bold"), 
+            fg_color=buttonColour3, 
+            hover_color=colourButtonHover4,
+            border_color=buttonColour3,
+            text_color=textColour3,
+            border_width=3,
+            corner_radius=8, 
+            height=40, 
+            width=176,
+            anchor="center",
+            border_spacing=10,
+            command=lambda: self.editHomebrewEntry(editEntry)
+        )
+        self.btnSaveHomebrew.pack(side="right", padx=20) 
+
+        self.btnCancelEditHomebrew = ctk.CTkButton(
+            editButtonsRow, 
+            text="Cancel", 
+            font=("Inter", 20, "bold"), 
+            fg_color=colour8, 
+            hover_color=colourButtonHover2,
+            border_color=buttonColour3,
+            border_width=3,
+            corner_radius=8, 
+            height=40, 
+            width=101,
+            anchor="center",
+            border_spacing=10,
+            command=self.hideEditOverlay
+        )
+        self.btnCancelEditHomebrew.pack(side="right", padx=20)
+
+        self.btnDeleteHomebrew = ctk.CTkButton(
+            editButtonsRow, 
+            text="Delete", 
+            font=("Inter", 20, "bold"), 
+            fg_color=buttonColour2, 
+            hover_color=colourButtonHover3,
+            border_color=colour5,
+            border_width=3,
+            corner_radius=8, 
+            height=40, 
+            width=137,
+            anchor="center",
+            border_spacing=10,
+            command=lambda: self.deleteOverlay(editEntry)
+        )
+        self.btnDeleteHomebrew.pack(side="left", padx=(5, 0))
+
+        """(
+            row4, 
+            text="Generate", 
+            font=("Inter", 20, "bold"), 
+            fg_color=buttonColour2, 
+            hover_color=colourButtonHover3,
+            border_color=colour5,
+            border_width=3,
+            corner_radius=8, 
+            height=50, 
+            width=200,
+            anchor="w",
+            border_spacing=10,
+            command=self.generateInformation
+            )"""
+
+    def addEditHomebrewWarning(self):
+        self.lblEditWarning.configure(text_color=textColour2)
+        self.lblEditDescriptionSide.configure(text_color=textColour2)
+        self.lblEditNameSide.configure(text_color=textColour2)
+
+    def editHomebrewEntry(self, editEntry):
+        category = self.selectedEditCategory.get()
+        name = self.editNameEntry.get()
+        description = self.editDescriptionEntry.get("1.0", "end-1c")
+
+        if name.strip() == "" or description.strip() == "":
+            self.addEditHomebrewWarning()
+        else:
+            generator.CharacterGenerator().editHomebrew(
+                editEntry["Type"], editEntry["Name"], category, name, description
+            )
+            self.hideEditOverlay()
+            self.HomebrewSidebar()
+            self.buildFilterDropdowns()
+
+    def hideEditOverlay(self):
+        self.editPopupFrame.destroy()
+        self.overlayFrame.destroy()
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Are You Sure about Deleting the Value Homebrew Popup
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    def deleteOverlay(self,editEntry):
+        self.editPopupFrame.destroy()
+
+        self.deleteFrame = ctk.CTkFrame(
+            self, 
+            fg_color=panelColour2, 
+            width=600, 
+            height=170,
+            corner_radius=12,
+            border_width=3,
+            border_color=colour8
+        )
+        self.deleteFrame.place(relx=0.5, rely=0.5, anchor="center")
+        self.deleteFrame.pack_propagate(False)
+        self.deleteFrame.lift()
+
+        lblEditTitle = ctk.CTkLabel(
+            self.deleteFrame, 
+            text="Are You Sure?",
+            font=("Inter", 30, "bold")
+        )
+        lblEditTitle.pack(side="top", anchor="w", padx=20, pady=(15, 10))
+
+        buttonRow = ctk.CTkFrame(self.deleteFrame, fg_color="transparent")
+        buttonRow.pack(side="bottom", anchor="w", padx=10, pady=(0, 10), fill = "x")
+
+        self.btnConfirmDelete = ctk.CTkButton(
+            buttonRow, 
+            text="Pretty Sure", 
+            font=("Inter", 20, "bold"), 
+            fg_color=buttonColour2, 
+            hover_color=colourButtonHover3,
+            border_color=colour5,
+            border_width=3,
+            corner_radius=8, 
+            height=40, 
+            width=166,
+            anchor="center",
+            border_spacing=10,
+            command=lambda: self.deleteHomebrewEntry(editEntry)
+        )
+        self.btnConfirmDelete.pack(side="right", padx=(0, 0))
+
+        self.btnCancelEditHomebrew = ctk.CTkButton(
+            buttonRow, 
+            text="Cancel", 
+            font=("Inter", 20, "bold"), 
+            fg_color=colour8, 
+            hover_color=colourButtonHover2,
+            border_color=buttonColour3,
+            border_width=3,
+            corner_radius=8, 
+            height=40, 
+            width=101,
+            anchor="center",
+            border_spacing=10,
+            command=self.hideDeleteOverlay
+        )
+        self.btnCancelEditHomebrew.pack(side="left", padx=0)
+
+    def hideDeleteOverlay(self):
+        self.deleteFrame.destroy()
+        self.overlayFrame.destroy()
+
+    def deleteHomebrewEntry(self, editEntry):
+        generator.CharacterGenerator().deleteHomebrew(editEntry["Type"], editEntry["Name"], editEntry["Description"])
+        self.hideDeleteOverlay()
+        self.HomebrewSidebar()
+        self.buildFilterDropdowns()
+    
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Functions to create the boxes when Generation will occur
+# ------------------------------------------------------------------------------------------------------------------------------------
 
     def nameFrame(self):
         self.topBar = ctk.CTkFrame(
@@ -855,6 +1226,10 @@ class App(ctk.CTk):
         )
         self.lblAllignmentInfo.grid(row=1, column=0, sticky="nw", padx=10, pady=5)
 
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Actually Generating the Character
+# ------------------------------------------------------------------------------------------------------------------------------------
+
     def generateInformation(self):
         dictFilterSet = self.gatherFiltered()
 
@@ -895,25 +1270,6 @@ class App(ctk.CTk):
                 option for option, chk in checkboxDict.items() if chk.get() == 1
             ]
         return dictEntries
-
-
-        
-        
-
-        
-
-
-        
-        
-
-        
-
-
-
-
-
-
-        
 
 
 if __name__ == "__main__":

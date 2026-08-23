@@ -279,7 +279,15 @@ class CharacterGenerator():
         lstSortedHomebrewList = sorted(lstHomebrewEntries, key=lambda x: x['Name'])
         return lstSortedHomebrewList
 
-    
+    def homebrewValues(self, traitType):
+        """
+        returns the name of all Homebrew values matching a given type
+        This is used to add icons to homebrew values
+        """
+        return {
+        entry["Name"] for entry in self.loadHomebrew()
+        if entry["Type"] == traitType
+        }
     
 
 if __name__ == "__main__":

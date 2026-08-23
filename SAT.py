@@ -114,6 +114,9 @@ class App(ctk.CTk):
         self.nameFrame()
         self.statFrames()
         self.generationFrames()
+
+        self.resizable(False, False)
+        self.iconbitmap("icons/appIcon.ico")
     
         
 
@@ -130,15 +133,29 @@ class App(ctk.CTk):
         )
         self.sidebar.pack(side="left", fill="y")
 
+        filterIcon = ctk.CTkImage(
+            light_image=Image.open("icons/filterIcon.png"),
+            dark_image=Image.open("icons/filterIcon.png"),
+            size=(35, 35)
+            )
+
         self.filterLabel = ctk.CTkLabel(
-            self.sidebar, text="Filters", anchor="w",
-            fg_color="transparent", font=("Inter", 20, "bold")
+            self.sidebar, 
+            text="Filters", 
+            anchor="w",
+            fg_color="transparent", 
+            font=("Inter", 35, "bold"),
+            image=filterIcon,
+            compound="left"
         )
         self.filterLabel.pack()
 
         self.filterListFrame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         self.filterListFrame.pack(fill="x")
         self.buildFilterDropdowns()
+
+        """
+        Leftover code, replace in BuildFilterDropdowns, was creating a second bunch of filters
 
         characterList = generator.CharacterGenerator().generateClassList()
         raceList = generator.CharacterGenerator().generateRaceList()
@@ -153,17 +170,26 @@ class App(ctk.CTk):
         self.buildDropdown(self.sidebar, "Appearance", appearanceList)
         self.buildDropdown(self.sidebar, "Alignment", allignmentList)
         self.buildDropdown(self.sidebar, "Skills", skillsList)
+        """
         
     # ------------------------------------------------------------------
     # Homebrew Buttons
     # ------------------------------------------------------------------
 
+        self.homebrewIcon = ctk.CTkImage(
+            light_image=Image.open("icons/homebrewIcon.png"),
+            dark_image=Image.open("icons/homebrewIcon.png"),
+            size=(35, 35)
+            )
+
         self.lblHomebrew = ctk.CTkLabel(
             self.sidebar, 
-            text="Homebrew", 
+            text="Homebrew",
             anchor="w",
             fg_color="transparent", 
-            font=("Inter", 20, "bold")
+            font=("Inter", 35, "bold"),
+            image=self.homebrewIcon,
+            compound="left"
             )
 
         btnAdd = ctk.CTkButton(
@@ -183,7 +209,7 @@ class App(ctk.CTk):
         
         intFilterYPad = 2
         intFilterXPad = 10
-        self.filterLabel.pack()
+        #self.filterLabel.pack()
 
         """
         btnRace.pack(pady=intFilterYPad, padx=intFilterXPad)
@@ -223,13 +249,34 @@ class App(ctk.CTk):
             self.filterCheckboxes = {}
         self.filterCheckboxes[title] = {}
 
+        homebrewNames = generator.CharacterGenerator().homebrewValues(title)
+
+        filterHomebrewIcon = ctk.CTkImage(
+            light_image=Image.open("icons/homebrewIcon.png"),
+            dark_image=Image.open("icons/homebrewIcon.png"),
+            size=(20, 20)
+            )
+
         for option in options:
+            optionRow = ctk.CTkFrame(contentFrame, fg_color="transparent")
+            optionRow.pack(anchor="w", fill="x", padx=20, pady=2)
+
             chk = ctk.CTkCheckBox(
-                contentFrame, text=option,
+                optionRow, text=option,
                 font=("Inter", 14)
             )
-            chk.pack(anchor="w", padx=20, pady=2)
-            self.filterCheckboxes[title][option] = chk   
+            chk.pack(side="left", padx=20, pady=2)
+            self.filterCheckboxes[title][option] = chk 
+
+            if option in homebrewNames:
+                iconLbl = ctk.CTkLabel(
+                optionRow, 
+                image=filterHomebrewIcon, 
+                text=""
+                )
+                iconLbl.pack(side="left", padx=(5, 0))
+
+        #self.filterCheckboxes[title][option] = chk
 
     def toggleDropdown(self, button, contentFrame, title):
         if contentFrame.winfo_ismapped():
@@ -735,6 +782,12 @@ class App(ctk.CTk):
         )
         self.btnCancelEditHomebrew.pack(side="right", padx=20)
 
+        self.deleteIcon = ctk.CTkImage(
+            light_image=Image.open("icons/deleteIcon.png"),
+            dark_image=Image.open("icons/deleteIcon.png"),
+            size=(30, 30)
+            )
+
         self.btnDeleteHomebrew = ctk.CTkButton(
             editButtonsRow, 
             text="Delete", 
@@ -748,7 +801,8 @@ class App(ctk.CTk):
             width=137,
             anchor="center",
             border_spacing=10,
-            command=lambda: self.deleteOverlay(editEntry)
+            command=lambda: self.deleteOverlay(editEntry),
+            image=self.deleteIcon
         )
         self.btnDeleteHomebrew.pack(side="left", padx=(5, 0))
 
@@ -835,7 +889,8 @@ class App(ctk.CTk):
             width=166,
             anchor="center",
             border_spacing=10,
-            command=lambda: self.deleteHomebrewEntry(editEntry)
+            command=lambda: self.deleteHomebrewEntry(editEntry),
+            image=self.deleteIcon
         )
         self.btnConfirmDelete.pack(side="right", padx=(0, 0))
 
@@ -1100,6 +1155,12 @@ class App(ctk.CTk):
         row4 = ctk.CTkFrame(self.frmGenerationFrame, fg_color="transparent")
         row4.pack(side="top", anchor="w", fill = "x")
 
+        importIcon = ctk.CTkImage(
+            light_image=Image.open("icons/loadIcon.png"),
+            dark_image=Image.open("icons/loadIcon.png"),
+            size=(30, 30)
+)
+
         self.btnImport =  ctk.CTkButton(
             row4, 
             text="Import", 
@@ -1113,9 +1174,16 @@ class App(ctk.CTk):
             width=200,
             anchor="w",
             border_spacing=10,
-            command=self.importCharacter
+            command=self.importCharacter,
+            image=importIcon
             )
         self.btnImport.pack(side="left", padx = 20)
+
+        exportIcon = ctk.CTkImage(
+            light_image=Image.open("icons/saveIcon.png"),
+            dark_image=Image.open("icons/saveIcon.png"),
+            size=(30, 30)
+            )
 
         self.btnExport =  ctk.CTkButton(
             row4, 
@@ -1130,9 +1198,16 @@ class App(ctk.CTk):
             width=200,
             anchor="w",
             border_spacing=10,
-            command=self.exportCharacter
+            command=self.exportCharacter,
+            image=exportIcon
             )
         self.btnExport.pack(side="left", padx = 20)
+
+        generateIcon = ctk.CTkImage(
+            light_image=Image.open("icons/GenerateIcon.png"),
+            dark_image=Image.open("icons/GenerateIcon.png"),
+            size=(30, 30)
+            )
 
         self.btnGenerate =  ctk.CTkButton(
             row4, 
@@ -1147,7 +1222,8 @@ class App(ctk.CTk):
             width=200,
             anchor="w",
             border_spacing=10,
-            command=self.generateInformation
+            command=self.generateInformation,
+            image=generateIcon
             )
         self.btnGenerate.pack(side = "right", padx = 20)
 

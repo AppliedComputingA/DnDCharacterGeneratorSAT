@@ -32,6 +32,7 @@ buttonColour3 = "#6FBF9E"
 textColour1 = "#BCBBBB"
 textColour2 = "#E2725B"
 textColour3 = "#1A2420"
+textBoxColour = "#343638"
 
 ctk.set_appearance_mode("dark")
 
@@ -1298,7 +1299,7 @@ class App(ctk.CTk):
             font=("Inter", 16, "bold"),
             width=460, 
             height=200, 
-            fg_color="transparent"  
+            fg_color=textBoxColour
             )
 
         self.lblBackgroundInfo = ctk.CTkLabel(
@@ -1316,7 +1317,7 @@ class App(ctk.CTk):
             font=("Inter", 16, "bold"),
             width=460, 
             height=200, 
-            fg_color="transparent"  
+            fg_color=textBoxColour 
             )
 
         self.lblAppearanceInfo = ctk.CTkLabel(
@@ -1334,7 +1335,7 @@ class App(ctk.CTk):
             font=("Inter", 16, "bold"),
             width=460, 
             height=200, 
-            fg_color="transparent"  
+            fg_color=textBoxColour  
             )
 
         self.lblSkillsInfo = ctk.CTkLabel(
@@ -1352,7 +1353,7 @@ class App(ctk.CTk):
             font=("Inter", 16, "bold"),
             width=460, 
             height=200, 
-            fg_color="transparent"  
+            fg_color=textBoxColour  
             )
 
         self.lblNotesInfo = ctk.CTkLabel(
@@ -1370,7 +1371,7 @@ class App(ctk.CTk):
             font=("Inter", 16, "bold"),
             width=200, 
             height=100, 
-            fg_color="transparent"  
+            fg_color=textBoxColour  
             )
 
         self.lblAllignmentInfo = ctk.CTkLabel(
@@ -1388,7 +1389,7 @@ class App(ctk.CTk):
             font=("Inter", 16, "bold"),
             width=200, 
             height=100, 
-            fg_color="transparent"  
+            fg_color=textBoxColour  
             )
 
 # ------------------------------------------------------------------------------------------------------------------------------------
@@ -1487,6 +1488,7 @@ class App(ctk.CTk):
 # ------------------------------------------------------------------------------------------------------------------------------------
 
     def toggleNameEdit(self):
+        
         if self.isEditingName == False:
 
             for key in self.lblStatValues:
@@ -1562,7 +1564,7 @@ class App(ctk.CTk):
 
             self.isEditingName = False
             self.btnEditName.configure(image=self.editIcon)
-        
+
 
 if __name__ == "__main__":
     app = App()

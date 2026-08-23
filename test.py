@@ -87,22 +87,19 @@ class App(ctk.CTk):
 
         self.title("D&D Character Generator")
         self.geometry("1440x1000")
-        """self.appearanceMode = ctk.get_appearance_mode()
-        if self.appearanceMode == "Dark":
-            self.bg = backgroundImage(self, "forestBackground.png")
-            self.bg.place(x=0, y=0, relwidth=1, relheight=1)
-        elif self.appearanceMode == "Light":
-            self.bg = backgroundImage(self, "BFG.jpeg")
-            self.bg.place(x=0, y=0, relwidth=1, relheight=1)"""
-        self.configure(fg_color="#000000")
 
-        #bg.place(x=0, y=0, relwidth=1, relheight=1)
+        # Background image (sits behind everything)
+        self.bg = backgroundImage(self, "forestBackground.png")
+        self.bg.place(x=0, y=0, relwidth=1, relheight=1)
+        self.bg.lower()
+
+        self.configure(fg_color="#000000")  # fallback if image fails to load
 
         self.buildSidebar()
         self.nameFrame()
         self.statFrames()
         self.generationFrames()
-    
+        
         
 
 # ------------------------------------------------------------------

@@ -206,15 +206,15 @@ class CharacterGenerator():
         #print(nameValue)
         return nameString
 
-    def addHomebrew(self, type, name):
+    def addHomebrew(self, type, name, description):
         """
         This function adds a homebrew trait to the HomebrewValues.csv file.
         This will be done by appending a new row to the CSV file with the type and name of the homebrew trait.
         """
         with open("Traits/HomebrewValues.csv", "a", newline='', encoding='utf-8') as csvfile:
-            fieldnames = ["Type", "Name"]
+            fieldnames = ["Type", "Name", "Description"]
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writerow({"Type": type, "Name": name})
+            writer.writerow({"Type": type, "Name": name, "Description": description})
 
     def editHomebrew(self, oldType, oldName, newType, newName):
         """

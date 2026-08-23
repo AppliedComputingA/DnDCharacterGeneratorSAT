@@ -12,14 +12,21 @@ colour3 = "#2B463B"
 colour4 = "#000000"
 colour5 = "#873F30"
 colour6 = "#3B6E5E"
+colour7 = "#0E7D54"
+colour8 = "#2E4A3E"
 colourButtonHover = "#30594c"
 colourButtonHover2 = "#07412B"
 colourButtonHover3 = "#BB5E4B"
-colour7 = "#0E7D54"
+colourButtonHover4 = "#569A7E"
 textColour1 = "#FFFFFF"
 panelColour1 = "#242424"
+panelColour2 = "#202A26"
 buttonColour1 = "#62BD97"
 buttonColour2 = "#E2725B"
+buttonColour3 = "#6FBF9E"
+textColour1 = "#BCBBBB"
+textColour2 = "#E2725B"
+textColour3 = "#1A2420"
 
 ctk.set_appearance_mode("dark")
 
@@ -264,7 +271,7 @@ class App(ctk.CTk):
             width=120,
             anchor="w",
             border_spacing=10,
-            command=self.showOverlay
+            #command=self.showEditOverlay
             )
         btnEdit.pack(side="right", anchor="w", padx=5, pady=(5, 5))
 
@@ -272,15 +279,189 @@ class App(ctk.CTk):
         self.overlayFrame = ctk.CTkFrame(self, fg_color="#000000", corner_radius=0)
         self.overlayFrame.place(x=0, y=0, relwidth=1, relheight=1)
         self.overlayFrame.lift()
-        #For some reason shows an error, cannot find i way to prevent this, however works completely as intended
-        pywinstyles.set_opacity(self.overlayFrame, value=0.9, color="#000001")
+        #For some reason shows an error, cannot find a way to prevent this, however works completely as intended with no errors
+        pywinstyles.set_opacity(self.overlayFrame, value=0.999, color="#000001")
 
-        """popupFrame = ctk.CTkFrame(self, fg_color=colour2, width=300, height=200)
-        popupFrame.place(relx=0.5, rely=0.5, anchor="center")
-        popupFrame.pack_propagate(False)
-        popupFrame.lift()
+        self.popupFrame = ctk.CTkFrame(
+            self, 
+            fg_color=panelColour2, 
+            width=1000, 
+            height=650,
+            corner_radius=12,
+            border_width=3,
+            border_color=colour8
+        )
+        self.popupFrame.place(relx=0.5, rely=0.5, anchor="center")
+        self.popupFrame.pack_propagate(False)
+        self.popupFrame.lift()
 
-        btnCancel = ctk.CTkButton(
+        lblTitle = ctk.CTkLabel(
+        self.popupFrame, 
+        text="Add New Homebrew",
+        font=("Inter", 30, "bold")
+        )
+        lblTitle.pack(side = "top", anchor = "w", padx = 20, pady=(15, 10))
+
+        categoryRow = ctk.CTkFrame(self.popupFrame, fg_color="transparent")
+        categoryRow.pack(side="top", anchor="w", padx=20, pady=(0, 2))
+
+        lblCatergoryMain = ctk.CTkLabel(
+            categoryRow, 
+            text="CATERGORY",
+            font=("Inter", 12, "bold"),
+            text_color=textColour1
+            )
+        lblCatergoryMain.pack(side = "left")
+
+        lblCatergorySide = ctk.CTkLabel(
+            categoryRow, 
+            text="*",
+            font=("Inter", 12, "bold"),
+            text_color=textColour2
+            )
+        
+
+        self.categoryOptions = ["Race", "Class", "Background", "Personality", "Appearance", "Alignment", "Skills"]
+        self.selectedCategory = ctk.StringVar(value=self.categoryOptions[0])
+
+        categorySelectRow = ctk.CTkFrame(self.popupFrame, fg_color="transparent")
+        categorySelectRow.pack(side="top", anchor="w", padx=20, pady=(0, 5))
+
+        self.categoryDropdown = ctk.CTkOptionMenu(
+            categorySelectRow,
+            values=self.categoryOptions,
+            variable=self.selectedCategory,
+            font=("Inter", 16, "bold"),
+            fg_color=colour6,
+            button_color=colourButtonHover,
+            button_hover_color=colourButtonHover2,
+            dropdown_fg_color=panelColour1,
+            dropdown_hover_color=colourButtonHover,
+            corner_radius=8,
+            width=963,
+            height=39
+        )
+        self.categoryDropdown.pack()
+
+        nameRow = ctk.CTkFrame(self.popupFrame, fg_color="transparent")
+        nameRow.pack(side="top", anchor="w", padx=20, pady=(0, 0))
+
+        lblNameMain = ctk.CTkLabel(
+            nameRow, 
+            text="NAME",
+            font=("Inter", 12, "bold"),
+            text_color=textColour1
+            )
+        lblNameMain.pack(side = "left")
+
+        self.lblNameSide = ctk.CTkLabel(
+            nameRow, 
+            text="*",
+            font=("Inter", 12, "bold"),
+            text_color=textColour1
+            )   
+        self.lblNameSide.pack(side = "left")
+
+        nameEntryRow = ctk.CTkFrame(self.popupFrame, fg_color="transparent")
+        nameEntryRow.pack(side="top", anchor="w", padx=20, pady=(0, 5))
+
+        self.nameEntry = ctk.CTkEntry(
+            nameEntryRow, 
+            placeholder_text="e.g. Kobold",
+            placeholder_text_color=textColour1,
+            #placehold_text_font=("Inter", 12, "bold"),
+            fg_color="transparent",
+            border_color=colour8,
+            corner_radius=8,
+            width=963,
+            height=39
+            )
+        self.nameEntry.pack()
+
+        descriptionRow = ctk.CTkFrame(self.popupFrame, fg_color="transparent")
+        descriptionRow.pack(side="top", anchor="w", padx=20, pady=(0, 0))
+
+        lblDescriptionMain = ctk.CTkLabel(
+            descriptionRow, 
+            text="NAME",
+            font=("Inter", 12, "bold"),
+            text_color=textColour1
+            )
+        lblDescriptionMain.pack(side = "left")
+
+        self.lblDescriptionSide = ctk.CTkLabel(
+            descriptionRow, 
+            text="*",
+            font=("Inter", 12, "bold"),
+            text_color=textColour1
+            )   
+        self.lblDescriptionSide.pack(side = "left")
+
+        descriptionEntryRow = ctk.CTkFrame(self.popupFrame, fg_color="transparent")
+        descriptionEntryRow.pack(side="top", anchor="w", padx=20, pady=(0, 5))
+
+        self.descriptionEntry = ctk.CTkTextbox(
+            descriptionEntryRow,
+            fg_color="transparent",
+            border_color=colour8,
+            border_width=2,
+            corner_radius=8,
+            width=963,
+            height=292,
+            font=("Inter", 14)
+            )
+        self.descriptionEntry.pack()
+
+        warningRow = ctk.CTkFrame(self.popupFrame, fg_color="transparent")
+        warningRow.pack(side="top", anchor="w", padx=20, pady=(0, 0))
+
+        self.lblWarning = ctk.CTkLabel(
+            warningRow, 
+            text="THIS FIELD IS REQUIRED*",
+            font=("Inter", 12, "bold"),
+            text_color=textColour1
+            )
+        self.lblWarning.pack(side = "left")
+
+        buttonsRow = ctk.CTkFrame(self.popupFrame, fg_color="transparent")
+        buttonsRow.pack(side="top", anchor="w", padx=20, pady=(5, 5), fill = "x")
+
+        self.btnAddHomebrew = ctk.CTkButton(
+            buttonsRow, 
+            text="Add Homebrew", 
+            font=("Inter", 20, "bold"), 
+            fg_color=buttonColour3, 
+            hover_color=colourButtonHover4,
+            border_color=buttonColour3,
+            text_color=textColour3,
+            border_width=3,
+            corner_radius=8, 
+            height=40, 
+            width=176,
+            anchor="center",
+            border_spacing=10,
+            command=self.addHomebrewEntry
+        )
+        self.btnAddHomebrew.pack(side="right", padx=20) 
+
+        self.btnCancelHomebrew =  ctk.CTkButton(
+            buttonsRow, 
+            text="Cancel", 
+            font=("Inter", 20, "bold"), 
+            fg_color=colour8, 
+            hover_color=colourButtonHover2,
+            border_color=buttonColour3,
+            border_width=3,
+            corner_radius=8, 
+            height=40, 
+            width=101,
+            anchor="center",
+            border_spacing=10,
+            command=self.hideOverlay
+            )
+        self.btnCancelHomebrew.pack(side="right", padx = 20)       
+
+        """btnCancel = ctk.CTkButton(
             popupFrame, text="Alignment", 
             font=("Inter", 16, "bold"), 
             fg_color=colour6, 
@@ -295,8 +476,26 @@ class App(ctk.CTk):
 
         btnCancel.pack(pady=2, padx=10)"""
 
-    def HideOverlay(self, overlayFrame):
-        overlayFrame.destroy()
+    def addHomebrewWarning(self):
+        self.lblWarning.configure(text_color = textColour2) #damn merican spelling
+        self.lblDescriptionSide.configure(text_color = textColour2) 
+        self.lblNameSide.configure(text_color = textColour2) 
+        #self.lblWarning.configure(text_color = textColour2) 
+
+    def addHomebrewEntry(self):
+        category = self.selectedCategory.get()
+        name = self.nameEntry.get()
+        description = self.descriptionEntry.get("1.0", "end-1c")
+
+        if name.strip() == "" or description.strip() == "":
+            self.addHomebrewWarning()
+        else:
+            generator.CharacterGenerator().addHomebrew(category, name, description)
+            self.hideOverlay()
+
+    def hideOverlay(self):
+        self.popupFrame.destroy()
+        self.overlayFrame.destroy()
 
     def nameFrame(self):
         self.topBar = ctk.CTkFrame(

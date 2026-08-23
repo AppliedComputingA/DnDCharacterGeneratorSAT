@@ -4,6 +4,8 @@ import csv
 from PIL import Image, ImageDraw, ImageGrab
 import pywinstyles
 import generator
+from tkinter import filedialog
+import json
 
 # -------------------------------------------------------
 # All Colours used repeatedly
@@ -869,6 +871,9 @@ class App(ctk.CTk):
 # ------------------------------------------------------------------------------------------------------------------------------------
 
     def nameFrame(self):
+        """
+        This function builds a frame at the top of the screen and everything inside of it
+        """
         self.topBar = ctk.CTkFrame(
             self, 
             height=92, 
@@ -918,6 +923,35 @@ class App(ctk.CTk):
         )
         self.lblClass.pack(pady=0, side="left", padx=5)
 
+        self.entryName = ctk.CTkEntry(nameRow, font=("Inter", 40, "bold"), width=400)
+        self.entryRace = ctk.CTkEntry(traitRow, font=("Inter", 20, "bold"), width=150)
+        self.entryClass = ctk.CTkEntry(traitRow, font=("Inter", 20, "bold"), width=150)
+
+        self.isEditingName = False
+
+        self.editIcon = ctk.CTkImage(
+            light_image=Image.open("icons/editIcon.png"),
+            dark_image=Image.open("icons/editIcon.png"),
+            size=(64, 64)
+            )
+
+        self.saveIcon = ctk.CTkImage(
+            light_image=Image.open("icons/saveIcon.png"),
+            dark_image=Image.open("icons/saveIcon.png"), 
+            size=(64, 64))
+        
+        self.btnEditName = ctk.CTkButton(
+            self.topBar,
+            image=self.editIcon,
+            text="",
+            fg_color="transparent",
+            hover_color=colourButtonHover2,
+            width=40,
+            height=40,
+            command=self.toggleNameEdit
+        )
+        self.btnEditName.pack(side="right", padx=20)
+        
     def statFrames(self):
 
         self.frmGenerationFrame = ctk.CTkFrame(self, fg_color="transparent")
@@ -928,6 +962,7 @@ class App(ctk.CTk):
 
         dctStats = generator.CharacterGenerator().statGeneration()
         self.lblStatValues = {}
+        self.entryStatValues = {}
 
         for i, (key, value) in enumerate(dctStats.items()):
             row1.columnconfigure(i, weight=1, uniform="statcol")
@@ -961,6 +996,12 @@ class App(ctk.CTk):
                 )
             lblStatValue.pack(pady=5, anchor="center")
             self.lblStatValues[key] = lblStatValue
+
+            entryStatValue = ctk.CTkEntry(
+                self.statBox, font=("Inter", 30, "bold"),
+                justify="center", width=80
+            )
+            self.entryStatValues[key] = entryStatValue
 
     def generationFrames(self):
 
@@ -1072,7 +1113,7 @@ class App(ctk.CTk):
             width=200,
             anchor="w",
             border_spacing=10,
-            #command=self.showOverlay
+            command=self.importCharacter
             )
         self.btnImport.pack(side="left", padx = 20)
 
@@ -1089,7 +1130,7 @@ class App(ctk.CTk):
             width=200,
             anchor="w",
             border_spacing=10,
-            #command=self.showOverlay
+            command=self.exportCharacter
             )
         self.btnExport.pack(side="left", padx = 20)
 
@@ -1176,6 +1217,14 @@ class App(ctk.CTk):
         )
         self.lblClassInfo.grid(row=1, column=0, sticky="nw", padx=10, pady=0)
 
+        self.txtClassInfo = ctk.CTkTextbox(
+            self.frmClassDetails, 
+            font=("Inter", 16, "bold"),
+            width=460, 
+            height=200, 
+            fg_color="transparent"  
+            )
+
         self.lblBackgroundInfo = ctk.CTkLabel(
             self.frmBackground, 
             text="", 
@@ -1185,6 +1234,14 @@ class App(ctk.CTk):
             wraplength=460
         )
         self.lblBackgroundInfo.grid(row=1, column=0, sticky="nw", padx=5, pady=0)
+
+        self.txtBackgroundInfo = ctk.CTkTextbox(
+            self.frmBackground, 
+            font=("Inter", 16, "bold"),
+            width=460, 
+            height=200, 
+            fg_color="transparent"  
+            )
 
         self.lblAppearanceInfo = ctk.CTkLabel(
             self.frmAppearance, 
@@ -1196,6 +1253,14 @@ class App(ctk.CTk):
         )
         self.lblAppearanceInfo.grid(row=1, column=0, sticky="nw", padx=5, pady=0)
 
+        self.txtAppearanceInfo = ctk.CTkTextbox(
+            self.frmAppearance, 
+            font=("Inter", 16, "bold"),
+            width=460, 
+            height=200, 
+            fg_color="transparent"  
+            )
+
         self.lblSkillsInfo = ctk.CTkLabel(
             self.frmSkills, 
             text="", 
@@ -1206,15 +1271,31 @@ class App(ctk.CTk):
         )
         self.lblSkillsInfo.grid(row=1, column=0, sticky="nw", padx=5, pady=0)
 
+        self.txtSkillsInfo = ctk.CTkTextbox(
+            self.frmSkills, 
+            font=("Inter", 16, "bold"),
+            width=460, 
+            height=200, 
+            fg_color="transparent"  
+            )
+
         self.lblNotesInfo = ctk.CTkLabel(
             self.frmNotes, 
             text="", 
             anchor="w",
             fg_color="transparent", 
             font=("Inter", 16, "bold"),
-            wraplength=230
+            wraplength=200
         )
         self.lblNotesInfo.grid(row=1, column=0, sticky="nw", padx=10, pady=5)
+
+        self.txtNotesInfo = ctk.CTkTextbox(
+            self.frmNotes, 
+            font=("Inter", 16, "bold"),
+            width=200, 
+            height=100, 
+            fg_color="transparent"  
+            )
 
         self.lblAllignmentInfo = ctk.CTkLabel(
             self.frmAllignment, 
@@ -1225,6 +1306,14 @@ class App(ctk.CTk):
             wraplength=230
         )
         self.lblAllignmentInfo.grid(row=1, column=0, sticky="nw", padx=10, pady=5)
+
+        self.txtAllignmentInfo = ctk.CTkTextbox(
+            self.frmAllignment, 
+            font=("Inter", 16, "bold"),
+            width=200, 
+            height=100, 
+            fg_color="transparent"  
+            )
 
 # ------------------------------------------------------------------------------------------------------------------------------------
 # Actually Generating the Character
@@ -1271,6 +1360,133 @@ class App(ctk.CTk):
             ]
         return dictEntries
 
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Importing and Exporting
+# ------------------------------------------------------------------------------------------------------------------------------------
+    def exportCharacter(self):
+        character = {
+        "Name": self.lblName.cget("text"),
+        "Race": self.lblRace.cget("text"),
+        "Class": self.lblClass.cget("text"),
+        "Stats": {key: lbl.cget("text") for key, lbl in self.lblStatValues.items()},
+        "ClassInfo": self.lblClassInfo.cget("text"),
+        "BackgroundInfo": self.lblBackgroundInfo.cget("text"),
+        "AppearanceInfo": self.lblAppearanceInfo.cget("text"),
+        "AllignmentInfo": self.lblAllignmentInfo.cget("text"),
+        }
+
+        filePath = filedialog.asksaveasfilename(
+            defaultextension=".json",
+            filetypes=[("JSON files", "*.json")],
+            initialfile=f"{character['Name']}.json"
+        )
+        if filePath:
+            with open(filePath, "w", encoding="utf-8") as f:
+                json.dump(character, f, indent=2)
+
+    def importCharacter(self):
+        filePath = filedialog.askopenfilename(
+        filetypes=[("JSON files", "*.json")]
+        )
+        if not filePath:
+            return
+
+        with open(filePath, "r", encoding="utf-8") as f:
+            character = json.load(f)
+
+        self.lblName.configure(text=character.get("Name", ""))
+        self.lblRace.configure(text=character.get("Race", ""))
+        self.lblClass.configure(text=character.get("Class", ""))
+
+        for key, value in character.get("Stats", {}).items():
+            if key in self.lblStatValues:
+                self.lblStatValues[key].configure(text=value)
+
+        self.lblClassInfo.configure(text=character.get("ClassInfo", ""))
+        self.lblBackgroundInfo.configure(text=character.get("BackgroundInfo", ""))
+        self.lblAppearanceInfo.configure(text=character.get("AppearanceInfo", ""))
+        self.lblAllignmentInfo.configure(text=character.get("AllignmentInfo", ""))
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Editing
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    def toggleNameEdit(self):
+        if self.isEditingName == False:
+
+            for key in self.lblStatValues:
+                self.entryStatValues[key].insert(0, self.lblStatValues[key].cget("text"))
+                self.lblStatValues[key].pack_forget()
+                self.entryStatValues[key].pack(pady=5, anchor="center")
+
+            for lbl, txt in [
+                (self.lblClassInfo, self.txtClassInfo),
+                (self.lblBackgroundInfo, self.txtBackgroundInfo),
+                (self.lblAppearanceInfo, self.txtAppearanceInfo),
+                (self.lblSkillsInfo, self.txtSkillsInfo),
+                (self.lblNotesInfo, self.txtNotesInfo),
+                (self.lblAllignmentInfo, self.txtAllignmentInfo),
+            ]:
+                txt.insert("1.0", lbl.cget("text"))
+                lbl.grid_remove()
+                txt.grid(row=1, column=0, sticky="nw", padx=10, pady=0)
+    
+            self.entryName.insert(0, self.lblName.cget("text"))
+            self.entryRace.insert(0, self.lblRace.cget("text"))
+            self.entryClass.insert(0, self.lblClass.cget("text"))
+
+            self.lblName.pack_forget()
+            self.entryName.pack(side="left")
+
+            self.lblRace.pack_forget()
+            self.entryRace.pack(side="left", padx=5)
+
+            self.lblClass.pack_forget()
+            self.entryClass.pack(side="left", padx=5)
+
+            self.isEditingName = True
+            self.btnEditName.configure(image=self.saveIcon)
+        else:
+            for key in self.lblStatValues:
+                self.lblStatValues[key].configure(text=self.entryStatValues[key].get())
+                self.entryStatValues[key].delete(0, "end")
+                self.entryStatValues[key].pack_forget()
+                self.lblStatValues[key].pack(pady=5, anchor="center")
+
+            for lbl, txt in [
+                (self.lblClassInfo, self.txtClassInfo),
+                (self.lblBackgroundInfo, self.txtBackgroundInfo),
+                (self.lblAppearanceInfo, self.txtAppearanceInfo),
+                (self.lblSkillsInfo, self.txtSkillsInfo),
+                (self.lblNotesInfo, self.txtNotesInfo),
+                (self.lblAllignmentInfo, self.txtAllignmentInfo),
+            ]:
+                lbl.configure(text=txt.get("1.0", "end-1c"))
+                txt.delete("1.0", "end")
+                txt.grid_remove()
+                lbl.grid()
+
+            self.lblName.configure(text=self.entryName.get())
+
+            self.lblName.configure(text=self.entryName.get())
+            self.lblRace.configure(text=self.entryRace.get())
+            self.lblClass.configure(text=self.entryClass.get())
+
+            self.entryName.delete(0, "end")
+            self.entryRace.delete(0, "end")
+            self.entryClass.delete(0, "end")
+
+            self.entryName.pack_forget()
+            self.lblName.pack(side="left")
+
+            self.entryRace.pack_forget()
+            self.lblRace.pack(pady=0, side="left", padx=5)
+
+            self.entryClass.pack_forget()
+            self.lblClass.pack(pady=0, side="left", padx=5)
+
+            self.isEditingName = False
+            self.btnEditName.configure(image=self.editIcon)
+        
 
 if __name__ == "__main__":
     app = App()

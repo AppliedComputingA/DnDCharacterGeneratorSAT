@@ -15,7 +15,7 @@ class CharacterGenerator():
         self.PersonalityLocation = "Traits/PersonalityTraits.csv"
         self.AppearanceLocation = "Traits/AppearanceTraits.csv"
 
-    def generateTrait(self, fileLocation, traitSet):
+    def generateTrait(self, fileLocation, traitSet, filterSet):
         location = fileLocation
         if location is None:
             raise ValueError(f"File location not found")
@@ -42,6 +42,9 @@ class CharacterGenerator():
                         lstEntries.append(normalizedRow)
         except FileNotFoundError:
             pass
+
+        if filterSet:
+            lstEntries = [row for row in lstEntries if row[traitSet] in filterSet]  
 
         #print(lstEntries)
         roll = random.randint(1, len(lstEntries)) - 1
@@ -88,26 +91,26 @@ class CharacterGenerator():
     # Functions to generate each trait type.
     # ------------------------------------------------------------------
 
-    def generateRace(self):
-        return self.generateTrait(self.raceLocation, "Race")
+    def generateRace(self, filterSet):
+        return self.generateTrait(self.raceLocation, "Race", filterSet)
 
-    def generateClass(self):
-        return self.generateTrait(self.classLocation, "Class")
+    def generateClass(self, filterSet):
+        return self.generateTrait(self.classLocation, "Class", filterSet)
 
-    def generateBackground(self):
-        return self.generateTrait(self.backgroundLocation, "Background")
+    def generateBackground(self, filterSet):
+        return self.generateTrait(self.backgroundLocation, "Background", filterSet)
 
     def generateHomebrew(self):
-        return self.generateTrait(self.HomebrewLocation, "Homebrew")
+        return self.generateTrait(self.HomebrewLocation, "Homebrew", [])
 
     def generateName(self):
-        return self.generateTrait(self.NameLocation, "Name")
+        return self.generateTrait(self.NameLocation, "Name", [])
 
-    def generatePersonality(self):
-        return self.generateTrait(self.PersonalityLocation, "Personality")
+    def generatePersonality(self, filterSet):
+        return self.generateTrait(self.PersonalityLocation, "Personality", filterSet)
 
-    def generateAppearance(self):
-        return self.generateTrait(self.AppearanceLocation, "Appearance")
+    def generateAppearance(self, filterSet):
+        return self.generateTrait(self.AppearanceLocation, "Appearance", filterSet)
 
     # ------------------------------------------------------------------
     # Functions to generate each trait type.

@@ -180,15 +180,12 @@ class App(ctk.CTk):
         self.HomebrewSidebar()
         btnAdd.pack(pady=2, padx=intFilterXPad, anchor="w")
 
-    def buildDropdown(self, parent, title, options):
-        # Container for this whole dropdown block
+    def buildDropdown(self, parent, title, options):    
         frmDropdown = ctk.CTkFrame(parent, fg_color="transparent")
         frmDropdown.pack(fill="x", padx=10, pady=2)
 
-        # Content frame — starts hidden
         contentFrame = ctk.CTkFrame(frmDropdown, fg_color=colour3)
 
-        # Toggle button — text changes to show state
         toggleBtn = ctk.CTkButton(
             frmDropdown, text=f"{title}  ▾",
             font=("Inter", 16, "bold"),
@@ -199,13 +196,17 @@ class App(ctk.CTk):
         )
         toggleBtn.pack()
 
-        # Populate content with checkboxes/options (hidden until toggled)
+        if not hasattr(self, "filterCheckboxes"):
+            self.filterCheckboxes = {}
+        self.filterCheckboxes[title] = {}
+
         for option in options:
             chk = ctk.CTkCheckBox(
                 contentFrame, text=option,
                 font=("Inter", 14)
             )
             chk.pack(anchor="w", padx=20, pady=2)
+            self.filterCheckboxes[title][option] = chk   
 
     def toggleDropdown(self, button, contentFrame, title):
         if contentFrame.winfo_ismapped():
@@ -656,13 +657,15 @@ class App(ctk.CTk):
         self.lblAllignmentInfo.grid(row=1, column=0, sticky="nw", padx=10, pady=5)
 
     def generateInformation(self):
+        dictFilterSet = self.gatherFiltered()
+
         strName = generator.CharacterGenerator().NameGeneration()
-        dctClass = generator.CharacterGenerator().generateClass()
-        dctRace = generator.CharacterGenerator().generateRace()
+        dctClass = generator.CharacterGenerator().generateClass(dictFilterSet["Class"])
+        dctRace = generator.CharacterGenerator().generateRace(dictFilterSet["Race"])
         dctStats = generator.CharacterGenerator().statGeneration()
-        dctBackground = generator.CharacterGenerator().generateBackground()
-        dctPersonality = generator.CharacterGenerator().generatePersonality()
-        dctAppearance = generator.CharacterGenerator().generateAppearance()
+        dctBackground = generator.CharacterGenerator().generateBackground(dictFilterSet["Personality"])
+        dctPersonality = generator.CharacterGenerator().generatePersonality(dictFilterSet["Personality"])
+        dctAppearance = generator.CharacterGenerator().generateAppearance(dictFilterSet["Appearance"])
         strAlignment = generator.CharacterGenerator().alignmentGeneration()
 
         """strClassName = dctClass["Class"]
@@ -672,8 +675,8 @@ class App(ctk.CTk):
         
 
         self.lblName.configure(text=strName)
-        self.lblRace.configure(dctRace["Race"])
-        self.lblClass.configure(dctClass["Class"])
+        self.lblRace.configure(text=dctRace["Race"])
+        self.lblClass.configure(text=dctClass["Class"])
 
         for key, value in dctStats.items():
             self.lblStatValues[key].configure(text=value)
@@ -684,6 +687,16 @@ class App(ctk.CTk):
         self.lblAppearanceInfo.configure(text=dctAppearance["Appearance"])
         #print(dctAppearance)
         self.lblAllignmentInfo.configure(text=strAlignment)
+
+    def gatherFiltered(self):
+        dictEntries = {}
+
+        for category, checkboxDict in self.filterCheckboxes.items():
+            dictEntries[category] = [
+                option for option, chk in checkboxDict.items() if chk.get() == 1
+            ]
+        return dictEntries
+
 
         
         

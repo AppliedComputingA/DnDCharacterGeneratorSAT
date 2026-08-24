@@ -109,6 +109,8 @@ class App(ctk.CTk):
             self.bg.place(x=0, y=0, relwidth=1, relheight=1)"""
         self.configure(fg_color="#000000")
 
+        self.valueHistory = []
+
         #bg.place(x=0, y=0, relwidth=1, relheight=1)
 
         self.buildSidebar()
@@ -1228,6 +1230,31 @@ class App(ctk.CTk):
             )
         self.btnGenerate.pack(side = "right", padx = 20)
 
+        historyIcon = ctk.CTkImage(
+            light_image=Image.open("icons/historyIcon.png"),
+            dark_image=Image.open("icons/historyIcon.png"),
+            size=(30, 30)
+            )
+
+        self.btnHistory = ctk.CTkButton(
+            row4,
+            text = "",
+            font=("Inter", 20, "bold"), 
+            fg_color=buttonColour2, 
+            hover_color=colourButtonHover3,
+            border_color=colour5,
+            border_width=3,
+            corner_radius=8, 
+            height=50, 
+            width=50,
+            anchor="w",
+            border_spacing=10,
+            #command=self.generateInformation,
+            image=historyIcon
+            )
+        self.btnHistory.pack(side = "left", padx = 20)
+        
+
     def generationLabels(self):
         self.lblClassDetails = ctk.CTkLabel(
             self.frmClassDetails, 
@@ -1428,6 +1455,18 @@ class App(ctk.CTk):
         #print(dctAppearance)
         self.lblAllignmentInfo.configure(text=strAlignment)
 
+
+        self.characterHistory.append({
+            "Name": strName,
+            "Race": dctRace["Race"],
+            "Class": dctClass["Class"],
+            "Stats": dict(dctStats),
+            "ClassInfo": dctClass["Description"],
+            "BackgroundInfo": f"{dctBackground['Background']}\n\n{dctPersonality['Personality']}",
+            "AppearanceInfo": dctAppearance["Appearance"],
+            "AllignmentInfo": strAlignment,
+        })
+
     def gatherFiltered(self):
         dictEntries = {}
 
@@ -1483,6 +1522,26 @@ class App(ctk.CTk):
         self.lblBackgroundInfo.configure(text=character.get("BackgroundInfo", ""))
         self.lblAppearanceInfo.configure(text=character.get("AppearanceInfo", ""))
         self.lblAllignmentInfo.configure(text=character.get("AllignmentInfo", ""))
+
+    def characterHistory(self):
+        """
+        Make an Overlay that shows all character history
+        """
+        print()
+
+    def loadHistory(self, character):
+        self.lblName.configure(text=character["Name"])
+        self.lblRace.configure(text=character["Race"])
+        self.lblClass.configure(text=character["CLass"])
+
+        for key, value in character["Stats"].items():
+            if key in self.lblStatValues:
+                self.lblStatValues[key].configure(text=value)
+
+        self.lblClassInfo.configure(text=character["ClassInfo"])
+        self.lblBackgroundInfo.configure(text=character["BackgroundInfo"])
+        self.lblAppearanceInfo.configure(text=character["AppearanceInfo"])
+        self.lblAllignmentInfo.configure(text=character["AllignmentInfo"])
 # ------------------------------------------------------------------------------------------------------------------------------------
 # Editing
 # ------------------------------------------------------------------------------------------------------------------------------------

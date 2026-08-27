@@ -115,6 +115,7 @@ class App(ctk.CTk):
         self.nameFrame()
         self.statFrames()
         self.generationFrames()
+        self.lstCharacterHistory = []
 
         self.resizable(False, False)
         self.iconbitmap("icons/appIcon.ico")
@@ -808,7 +809,7 @@ class App(ctk.CTk):
         self.btnDeleteHomebrew.pack(side="left", padx=(5, 0))
 
         """(
-            row4, 
+            self.row4, 
             text="Generate", 
             font=("Inter", 20, "bold"), 
             fg_color=buttonColour2, 
@@ -1086,11 +1087,11 @@ class App(ctk.CTk):
         self.frmBackground.pack(side="left", padx=30)
         self.frmBackground.pack_propagate(False)
 
-        row3 = ctk.CTkFrame(self.frmGenerationFrame, fg_color="transparent")
-        row3.pack(side="top", anchor="w")
+        self.row3 = ctk.CTkFrame(self.frmGenerationFrame, fg_color="transparent")
+        self.row3.pack(side="top", anchor="w")
 
         self.frmAppearance = ctk.CTkScrollableFrame(
-            row3, width=500, 
+            self.row3, width=500, 
             height=300, 
             fg_color=panelColour1, 
             corner_radius=8,
@@ -1101,7 +1102,7 @@ class App(ctk.CTk):
         self.frmAppearance.pack_propagate(False)
 
         self.frmSkills = ctk.CTkScrollableFrame(
-            row3, width=200, 
+            self.row3, width=200, 
             height=300, 
             fg_color=panelColour1, 
             corner_radius=8,
@@ -1111,10 +1112,10 @@ class App(ctk.CTk):
         self.frmSkills.pack(side="left", padx=30, pady=20)
         self.frmSkills.pack_propagate(False)
 
-        """self.frmMiniGenerationFrame = ctk.CTkFrame(row3, fg_color="transparent")
+        """self.frmMiniGenerationFrame = ctk.CTkFrame(self.row3, fg_color="transparent")
         self.frmMiniGenerationFrame.pack(side="top", padx=0, pady=0, anchor="w")"""
 
-        self.frmMiniGenerationFrame = ctk.CTkFrame(row3, fg_color="transparent")
+        self.frmMiniGenerationFrame = ctk.CTkFrame(self.row3, fg_color="transparent")
         self.frmMiniGenerationFrame.pack(side="left", anchor="n", padx=30, pady=20)
 
         miniRow1 = ctk.CTkFrame(self.frmMiniGenerationFrame, fg_color="transparent")
@@ -1150,11 +1151,12 @@ class App(ctk.CTk):
         self.GenerationButtons()
         self.generationLabels()
         self.generationInformation()
+        #self.SkillsGenFrame()
 
     def GenerationButtons(self):
 
-        row4 = ctk.CTkFrame(self.frmGenerationFrame, fg_color="transparent")
-        row4.pack(side="top", anchor="w", fill = "x")
+        self.row4 = ctk.CTkFrame(self.frmGenerationFrame, fg_color="transparent")
+        self.row4.pack(side="top", anchor="w", fill = "x")
 
         importIcon = ctk.CTkImage(
             light_image=Image.open("icons/loadIcon.png"),
@@ -1163,7 +1165,7 @@ class App(ctk.CTk):
 )
 
         self.btnImport =  ctk.CTkButton(
-            row4, 
+            self.row4, 
             text="Import", 
             font=("Inter", 20, "bold"), 
             fg_color=buttonColour1, 
@@ -1187,7 +1189,7 @@ class App(ctk.CTk):
             )
 
         self.btnExport =  ctk.CTkButton(
-            row4, 
+            self.row4, 
             text="Export", 
             font=("Inter", 20, "bold"), 
             fg_color=buttonColour1, 
@@ -1211,7 +1213,7 @@ class App(ctk.CTk):
             )
 
         self.btnGenerate =  ctk.CTkButton(
-            row4, 
+            self.row4, 
             text="Generate", 
             font=("Inter", 20, "bold"), 
             fg_color=buttonColour2, 
@@ -1227,6 +1229,30 @@ class App(ctk.CTk):
             image=generateIcon
             )
         self.btnGenerate.pack(side = "right", padx = 20)
+
+        historyIcon = ctk.CTkImage(
+            light_image=Image.open("icons/historyIcon.png"),
+            dark_image=Image.open("icons/historyIcon.png"),
+            size=(30, 30)
+            )
+
+        self.btnHistory = ctk.CTkButton(
+            self.row4,
+            text = "",
+            font=("Inter", 20, "bold"), 
+            fg_color=buttonColour2, 
+            hover_color=colourButtonHover3,
+            border_color=colour5,
+            border_width=3,
+            corner_radius=8, 
+            height=50, 
+            width=50,
+            anchor="w",
+            border_spacing=10,
+            command=self.characterHistory,
+            image=historyIcon
+            )
+        self.btnHistory.pack(side = "left", padx = 20)
 
     def generationLabels(self):
         self.lblClassDetails = ctk.CTkLabel(
@@ -1263,6 +1289,7 @@ class App(ctk.CTk):
             fg_color="transparent", 
             font=("Inter", 20, "bold")
         )
+        #self.lblSkills.pack(anchor="w", side="top", padx=5, pady=5)
         self.lblSkills.grid(row=0, column=0, sticky="nw", padx=5, pady=0)
 
         self.lblNotes = ctk.CTkLabel(
@@ -1338,7 +1365,30 @@ class App(ctk.CTk):
             fg_color=textBoxColour  
             )
 
-        self.lblSkillsInfo = ctk.CTkLabel(
+        self.skillCheckboxes = {}
+        skillsList = generator.CharacterGenerator().generateSkillList()
+
+        for skill in skillsList:
+            position = skillsList.index(skill) + 1
+            chk = ctk.CTkCheckBox(
+                self.frmSkills, text=skill,
+                font=("Inter", 14),
+                state="disabled"
+            )
+            chk.grid(row=position, column=0, sticky="nw", padx=5, pady=0)
+            self.skillCheckboxes[skill] = chk
+
+
+        """for skill in skillsList:
+            chk = ctk.CTkCheckBox(
+                self.frmSkills, text=skill,
+                font=("Inter", 14)
+            )
+            chk.pack(anchor="w", padx=10, pady=4)
+            self.skillCheckboxes[skill] = chk"""
+
+        
+        """self.lblSkillsInfo = ctk.CTkLabel(
             self.frmSkills, 
             text="", 
             anchor="w",
@@ -1354,7 +1404,7 @@ class App(ctk.CTk):
             width=460, 
             height=200, 
             fg_color=textBoxColour  
-            )
+            )"""
 
         self.lblNotesInfo = ctk.CTkLabel(
             self.frmNotes, 
@@ -1392,11 +1442,44 @@ class App(ctk.CTk):
             fg_color=textBoxColour  
             )
 
+    def SkillsGenFrame(self):
+        self.frmSkills = ctk.CTkScrollableFrame(
+            self.row3, width=200, 
+            height=300, 
+            fg_color=panelColour1, 
+            corner_radius=8,
+            border_width=3,
+            border_color=colour7
+            )
+        self.frmSkills.pack(side="left", padx=30, pady=20)
+        self.frmSkills.pack_propagate(False)
+
+        self.lblSkills = ctk.CTkLabel(
+            self.frmSkills, 
+            text="Skills", 
+            anchor="w",
+            fg_color="transparent", 
+            font=("Inter", 20, "bold")
+        )
+        self.lblSkills.pack(anchor="w", padx=5, pady=5)
+
+        self.skillCheckboxes = {}
+        skillsList = generator.CharacterGenerator().generateSkillList()
+
+        for skill in skillsList:
+            chk = ctk.CTkCheckBox(
+                self.frmSkills, text=skill,
+                font=("Inter", 14)
+            )
+            chk.pack(anchor="w", padx=10, pady=4)
+            self.skillCheckboxes[skill] = chk
+
 # ------------------------------------------------------------------------------------------------------------------------------------
 # Actually Generating the Character
 # ------------------------------------------------------------------------------------------------------------------------------------
 
     def generateInformation(self):
+        self.saveToHistory()
         dictFilterSet = self.gatherFiltered()
 
         strName = generator.CharacterGenerator().NameGeneration()
@@ -1500,7 +1583,7 @@ class App(ctk.CTk):
                 (self.lblClassInfo, self.txtClassInfo),
                 (self.lblBackgroundInfo, self.txtBackgroundInfo),
                 (self.lblAppearanceInfo, self.txtAppearanceInfo),
-                (self.lblSkillsInfo, self.txtSkillsInfo),
+                #(self.lblSkillsInfo, self.txtSkillsInfo),
                 (self.lblNotesInfo, self.txtNotesInfo),
                 (self.lblAllignmentInfo, self.txtAllignmentInfo),
             ]:
@@ -1523,47 +1606,261 @@ class App(ctk.CTk):
 
             self.isEditingName = True
             self.btnEditName.configure(image=self.saveIcon)
+
+            #self.btnCancelEdit.pack(side="right", padx=20)
+
+            self.cancelEditButton()
+            self.row4.pack_forget()
+            
+
         else:
-            for key in self.lblStatValues:
-                self.lblStatValues[key].configure(text=self.entryStatValues[key].get())
-                self.entryStatValues[key].delete(0, "end")
-                self.entryStatValues[key].pack_forget()
-                self.lblStatValues[key].pack(pady=5, anchor="center")
+            self.saveEdit()
 
-            for lbl, txt in [
-                (self.lblClassInfo, self.txtClassInfo),
-                (self.lblBackgroundInfo, self.txtBackgroundInfo),
-                (self.lblAppearanceInfo, self.txtAppearanceInfo),
-                (self.lblSkillsInfo, self.txtSkillsInfo),
-                (self.lblNotesInfo, self.txtNotesInfo),
-                (self.lblAllignmentInfo, self.txtAllignmentInfo),
-            ]:
-                lbl.configure(text=txt.get("1.0", "end-1c"))
-                txt.delete("1.0", "end")
-                txt.grid_remove()
-                lbl.grid()
+    def saveEdit(self):
+        for key in self.lblStatValues:
+            self.lblStatValues[key].configure(text=self.entryStatValues[key].get())
+            self.entryStatValues[key].delete(0, "end")
+            self.entryStatValues[key].pack_forget()
+            self.lblStatValues[key].pack(pady=5, anchor="center")
 
-            self.lblName.configure(text=self.entryName.get())
+        for lbl, txt in [
+            (self.lblClassInfo, self.txtClassInfo),
+            (self.lblBackgroundInfo, self.txtBackgroundInfo),
+            (self.lblAppearanceInfo, self.txtAppearanceInfo),
+            #(self.lblSkillsInfo, self.txtSkillsInfo),
+            (self.lblNotesInfo, self.txtNotesInfo),
+            (self.lblAllignmentInfo, self.txtAllignmentInfo),
+        ]:
+            lbl.configure(text=txt.get("1.0", "end-1c"))
+            txt.delete("1.0", "end")
+            txt.grid_remove()
+            lbl.grid()
 
-            self.lblName.configure(text=self.entryName.get())
-            self.lblRace.configure(text=self.entryRace.get())
-            self.lblClass.configure(text=self.entryClass.get())
+        self.lblName.configure(text=self.entryName.get())
 
-            self.entryName.delete(0, "end")
-            self.entryRace.delete(0, "end")
-            self.entryClass.delete(0, "end")
+        self.lblName.configure(text=self.entryName.get())
+        self.lblRace.configure(text=self.entryRace.get())
+        self.lblClass.configure(text=self.entryClass.get())
 
-            self.entryName.pack_forget()
-            self.lblName.pack(side="left")
+        self.entryName.delete(0, "end")
+        self.entryRace.delete(0, "end")
+        self.entryClass.delete(0, "end")
 
-            self.entryRace.pack_forget()
-            self.lblRace.pack(pady=0, side="left", padx=5)
+        self.entryName.pack_forget()
+        self.lblName.pack(side="left")
 
-            self.entryClass.pack_forget()
-            self.lblClass.pack(pady=0, side="left", padx=5)
+        self.entryRace.pack_forget()
+        self.lblRace.pack(pady=0, side="left", padx=5)
 
-            self.isEditingName = False
-            self.btnEditName.configure(image=self.editIcon)
+        self.entryClass.pack_forget()
+        self.lblClass.pack(pady=0, side="left", padx=5)
+
+        self.isEditingName = False
+        self.btnEditName.configure(image=self.editIcon)
+
+        self.btnCancelEdit.destroy()
+        self.GenerationButtons()
+
+    def cancelEditButton(self):
+        self.btnCancelEdit = ctk.CTkButton(
+            self.topBar,
+            #image=self.editIcon,
+            text="Cancel",
+            font=("Inter", 18, "bold"), 
+            fg_color="transparent", 
+            hover_color=colourButtonHover3,
+            border_color="#FFFFFF",
+            border_width=3,
+            corner_radius=8, 
+            height=40, 
+            width=120,
+            anchor="w",
+            border_spacing=10,
+            command=self.cancelEdit
+        )
+        self.btnCancelEdit.pack(side="right", padx=20)
+
+    def cancelEdit(self):
+        self.entryName.delete(0, "end")
+        self.entryRace.delete(0, "end")
+        self.entryClass.delete(0, "end")
+
+        for key in self.lblStatValues:
+            self.entryStatValues[key].delete(0, "end")
+            self.entryStatValues[key].pack_forget()
+            self.lblStatValues[key].pack(pady=5, anchor="center")
+
+        for lbl, txt in [
+            (self.lblClassInfo, self.txtClassInfo),
+            (self.lblBackgroundInfo, self.txtBackgroundInfo),
+            (self.lblAppearanceInfo, self.txtAppearanceInfo),
+            #(self.lblSkillsInfo, self.txtSkillsInfo),
+            (self.lblNotesInfo, self.txtNotesInfo),
+            (self.lblAllignmentInfo, self.txtAllignmentInfo),
+        ]:
+            txt.delete("1.0", "end")
+            txt.grid_remove()
+            lbl.grid()
+
+        self.entryName.pack_forget()
+        self.lblName.pack(side="left")
+
+        self.entryRace.pack_forget()
+        self.lblRace.pack(pady=0, side="left", padx=5)
+
+        self.entryClass.pack_forget()
+        self.lblClass.pack(pady=0, side="left", padx=5)
+
+        self.isEditingName = False
+        self.btnEditName.configure(image=self.editIcon)
+
+        self.btnCancelEdit.destroy()
+        self.GenerationButtons()
+
+
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+# History
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    def characterHistory(self):
+            """
+            Make an Overlay that shows all character history
+            """
+            self.tintOverlay()
+
+            self.historyFrame = ctk.CTkFrame(
+                self, 
+                fg_color=panelColour2, 
+                width=1000, 
+                height=650,
+                corner_radius=12,
+                border_width=3,
+                border_color=colour8
+            )
+            self.historyFrame.place(relx=0.5, rely=0.5, anchor="center")
+            self.historyFrame.pack_propagate(False)
+            self.historyFrame.lift()
+
+            lblHistory =  ctk.CTkLabel(
+                self.historyFrame, 
+                text="History",
+                font=("Inter", 30, "bold")
+                    )
+            lblHistory.pack(side="top", anchor="w", padx=20, pady=(15, 10))
+
+            self.btnCancelHistory = ctk.CTkButton(
+                self.historyFrame, 
+                text="Cancel", 
+                font=("Inter", 20, "bold"), 
+                fg_color=colour8, 
+                hover_color=colourButtonHover2,
+                border_color=buttonColour3,
+                border_width=3,
+                corner_radius=8, 
+                height=40, 
+                width=101,
+                anchor="center",
+                border_spacing=10,
+                command=self.destroyHistory
+            )
+            self.btnCancelHistory.pack(anchor = "e", side="bottom", padx=20, pady =(0, 20))
+
+            self.characterFrame = ctk.CTkScrollableFrame(self.historyFrame, 
+                fg_color="transparent",
+                width=900, 
+                height=500,)
+            self.characterFrame.pack()
+            #self.characterFrame.propagate(False)
+
+            for each in self.lstCharacterHistory:
+                self.buildHistoryDropdowns(self.characterFrame, each.get("Name", ""), each)
+
+    def buildHistoryDropdowns(self, parent, title, history):
+        frmDropdown = ctk.CTkFrame(parent, fg_color="transparent")
+        frmDropdown.pack(fill="x", padx=10, pady=2)
+
+        contentFrame = ctk.CTkFrame(frmDropdown, fg_color=colour3)
+
+        toggleBtn = ctk.CTkButton(
+            frmDropdown, text=f"{title}  ▾",
+            font=("Inter", 16, "bold"),
+            fg_color=colour6, hover_color=colourButtonHover,
+            corner_radius=8, height=40, 
+            #width=240,
+            anchor="w", border_spacing=10,
+            command=lambda: self.toggleHistoryDropdowns(toggleBtn, contentFrame, title)
+        )
+        toggleBtn.pack(fill="x")
+
+        for key, value in history.items():
+            #print(character)
+            optionRow = ctk.CTkFrame(contentFrame, fg_color="transparent")
+            optionRow.pack(anchor="w", padx=20, pady=2)
+
+            lbl = ctk.CTkLabel(
+                optionRow, 
+                text=f"{key}: {value}",
+                font=("Inter", 14)
+            )
+            lbl.pack(side="left", padx=20, pady=2) 
+
+        btnEdit = ctk.CTkButton(
+            contentFrame, text="Load", 
+            font=("Inter", 18, "bold"), 
+            fg_color=buttonColour2, 
+            hover_color=colourButtonHover3,
+            border_color=colour5,
+            border_width=3,
+            corner_radius=8, 
+            height=40, 
+            width=120,
+            anchor="w",
+            border_spacing=10,
+            command=lambda:self.loadHistory(history)
+            )
+        btnEdit.pack(side="right", anchor="w", padx=5, pady=(5, 5))
+        
+    def toggleHistoryDropdowns(self, button, contentFrame, title):
+        if contentFrame.winfo_ismapped():
+            contentFrame.pack_forget()
+            button.configure(text=f"{title}  ▾")
+        else:
+            contentFrame.pack(fill="x")
+            button.configure(text=f"{title}  ▴")
+
+    def destroyHistory(self):
+        self.historyFrame.destroy()
+        self.overlayFrame.destroy()
+
+    def saveToHistory(self):
+        self.lstCharacterHistory.append({
+                "Name": self.lblName.cget("text"),
+                "Race": self.lblRace.cget("text"),
+                "Class": self.lblClass.cget("text"),
+                "Stats": {key: lbl.cget("text") for key, lbl in self.lblStatValues.items()},
+                "ClassInfo": self.lblClassInfo.cget("text"),
+                "BackgroundInfo": self.lblBackgroundInfo.cget("text"),
+                "AppearanceInfo": self.lblAppearanceInfo.cget("text"),
+                "AllignmentInfo": self.lblAllignmentInfo.cget("text"),
+                })
+
+    def loadHistory(self, character):
+        self.lblName.configure(text=character.get("Name", ""))
+        self.lblRace.configure(text=character.get("Race", ""))
+        self.lblClass.configure(text=character.get("Class", ""))
+
+        for key, value in character.get("Stats", {}).items():
+            if key in self.lblStatValues:
+                self.lblStatValues[key].configure(text=value)
+
+        self.lblClassInfo.configure(text=character.get("ClassInfo", ""))
+        self.lblBackgroundInfo.configure(text=character.get("BackgroundInfo", ""))
+        self.lblAppearanceInfo.configure(text=character.get("AppearanceInfo", ""))
+        self.lblAllignmentInfo.configure(text=character.get("AllignmentInfo", ""))
+        self.destroyHistory()
+
+
 
 
 if __name__ == "__main__":

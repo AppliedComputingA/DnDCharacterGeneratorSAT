@@ -92,7 +92,13 @@ class App(ctk.CTk):
 
     saveCSV is a def statement that takes the
     
-    
+    Attributes:
+    -
+    -
+
+    Methods:
+    buildSidebar(self) - does bla
+        returns - 
     
     """
     def __init__(self):
@@ -1368,10 +1374,10 @@ class App(ctk.CTk):
             )
 
         self.skillCheckboxes = {}
-        skillsList = generator.CharacterGenerator().generateSkillList()
+        self.skillsList = generator.CharacterGenerator().generateSkillList()
 
-        for skill in skillsList:
-            position = skillsList.index(skill) + 1
+        for skill in self.skillsList:
+            position = self.skillsList.index(skill) + 1
             chk = ctk.CTkCheckBox(
                 self.frmSkills, text=skill,
                 font=("Inter", 14),
@@ -1492,11 +1498,20 @@ class App(ctk.CTk):
         dctPersonality = generator.CharacterGenerator().generatePersonality(dictFilterSet["Personality"])
         dctAppearance = generator.CharacterGenerator().generateAppearance(dictFilterSet["Appearance"])
         strAlignment = generator.CharacterGenerator().alignmentGeneration()
+        lstActiveSkills = generator.CharacterGenerator().generateSkills(dctClass["Class"], "man", "man")
 
         """strClassName = dctClass["Class"]
         strRaceName = dctRace["Race"]
         strClassDescription=dctClass["Description"]
         strRaceDescription=dctRace["Description"]"""
+
+        for chk in self.skillsList:
+            self.skillCheckboxes[chk].deselect()
+            for skill in lstActiveSkills:
+                if self.skillCheckboxes[chk].cget("text") == skill:
+                    self.skillCheckboxes[chk].select()
+                
+
         
 
         self.lblName.configure(text=strName)
@@ -1592,6 +1607,9 @@ class App(ctk.CTk):
                 txt.insert("1.0", lbl.cget("text"))
                 lbl.grid_remove()
                 txt.grid(row=1, column=0, sticky="nw", padx=10, pady=0)
+
+            for chk in self.skillsList:
+                self.skillCheckboxes[chk].configure(state="normal")
     
             self.entryName.insert(0, self.lblName.cget("text"))
             self.entryRace.insert(0, self.lblRace.cget("text"))
@@ -1637,6 +1655,9 @@ class App(ctk.CTk):
             txt.delete("1.0", "end")
             txt.grid_remove()
             lbl.grid()
+
+        for chk in self.skillsList:
+            self.skillCheckboxes[chk].configure(state="disabled")
 
         self.lblName.configure(text=self.entryName.get())
 
@@ -1704,6 +1725,9 @@ class App(ctk.CTk):
             txt.grid_remove()
             lbl.grid()
 
+        for chk in self.skillsList:
+            self.skillCheckboxes[chk].configure(state="disbled")
+
         self.entryName.pack_forget()
         self.lblName.pack(side="left")
 
@@ -1718,8 +1742,6 @@ class App(ctk.CTk):
 
         self.btnCancelEdit.destroy()
         self.GenerationButtons()
-
-
 
 # ------------------------------------------------------------------------------------------------------------------------------------
 # History

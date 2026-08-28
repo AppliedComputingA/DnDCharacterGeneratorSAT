@@ -1,13 +1,13 @@
-Class,Description
-Barbarian,A mighty warrior who is powered by a primal force of the multiverse that manifest as a Rage.
-Ranger,"Is honed with deadly focus and harness primal powers to protect the world from the ravages of monsters and tyrants."
-Bard,"An expert in inspiring others, soothing hurts, disheartening foes, and creating illusions."
-Cleric,"Can reach out to the divine magic of the Outer Planes and channel it to bolster people and battle foes."
-Druid,"Calls on the forces of nature, harnessing magic to heal, transform into animals, and wield elemental destruction."
-Fighter,"Has an unparalleled prowess with weapons and armor, and is well acquainted with death, both meting it out and defying it."
-Monk,"Focuses their internal reservoirs of power to create extraordinary, even supernatural, effects."
-Paladin,"Lives on the front lines of the cosmic struggle, united by their oath against the forces of annihilation."
-Rouge,"Has a knack for finding the solution to just about any problem, prioritizing subtle strikes over brute strength."
-Sorcerer,"Harnesses and channels the raw, roiling power of innate magic that is stamped into their very being."
-Warlock,"Has a quest for knowledge that lies hidden in the fabric of the multiverse, piecing together arcane secrets to bolster their own power."
-Wizard,"Cast spells of explosive fire, arcing lightning, subtle deception, and spectacular transformations."
+Class,Description,Proficiency,NumChoices
+Barbarian,"A mighty warrior who is powered by a primal force of the multiverse that manifest as a Rage.","Animal Handling;Athletics;Intimidation;Nature;Perception;Survival",2
+Ranger,"Is honed with deadly focus and harness primal powers to protect the world from the ravages of monsters and tyrants.","Animal Handling;Athletics;Insight;Investigation;Nature;Perception;Stealth;Survival",3
+Bard,"An expert in inspiring others, soothing hurts, disheartening foes, and creating illusions.","Acrobatics;Animal Handling;Arcana;Athletics;Deception;History;Insight;Intimidation;Investigation;Medicine;Nature;Perception;Performance;Persuasion;Religion;Sleight of Hand;Stealth;Survival",3
+Cleric,"Can reach out to the divine magic of the Outer Planes and channel it to bolster people and battle foes.","History;Insight;Medicine;Persuasion;Religion",2
+Druid,"Calls on the forces of nature, harnessing magic to heal, transform into animals, and wield elemental destruction.","Arcana;Animal Handling;Insight;Medicine;Nature;Perception;Religion;Survival",2
+Fighter,"Has an unparalleled prowess with weapons and armor, and is well acquainted with death, both meting it out and defying it.","Acrobatics;Animal Handling;Athletics;History;Insight;Intimidation;Perception;Survival",2
+Monk,"Focuses their internal reservoirs of power to create extraordinary, even supernatural, effects.","Acrobatics;Athletics;History;Insight;Religion;Stealth",2
+Paladin,"Lives on the front lines of the cosmic struggle, united by their oath against the forces of annihilation.","Athletics;Insight;Intimidation;Medicine;Persuasion;Religion",2
+Rogue,"Has a knack for finding the solution to just about any problem, prioritizing subtle strikes over brute strength.","Acrobatics;Athletics;Deception;Insight;Intimidation;Investigation;Perception;Performance;Persuasion;Sleight of Hand;Stealth",4
+Sorcerer,"Harnesses and channels the raw, roiling power of innate magic that is stamped into their very being.","Arcana;Deception;Insight;Intimidation;Persuasion;Religion",2
+Warlock,"Has a quest for knowledge that lies hidden in the fabric of the multiverse, piecing together arcane secrets to bolster their own power.","Arcana;Deception;History;Intimidation;Investigation;Nature;Religion",2
+Wizard,"Cast spells of explosive fire, arcing lightning, subtle deception, and spectacular transformations.","Arcana;History;Insight;Investigation;Medicine;Religion",2

@@ -112,6 +112,40 @@ class CharacterGenerator():
     def generateAppearance(self, filterSet):
         return self.generateTrait(self.AppearanceLocation, "Appearance", filterSet)
 
+    def generateSkills(self, characterClass, background, filterSet):
+        """lstEntries = []
+        skillList = self.generateSkillList()
+        skillNumbers = random.sample(range(0, len(skillList)), 4)
+        #return self.unique_numbers
+        for each in skillNumbers:
+            skillValue = skillList[each]
+            lstEntries.append(skillValue)
+        return lstEntries"""
+        classData = self.loadClassSkills()
+        classInfo = classData.get(characterClass)
+
+        skillPool = classInfo["skillOptions"]
+        numToPick = classInfo["numChoices"]
+
+        lstEntries = random.sample(skillPool, numToPick)
+
+        return lstEntries
+    
+    def loadClassSkills(self):
+        classData = {}
+        with open("Traits/ClassTraits.csv", newline='', encoding='utf-8') as csvFile:
+            reader = csv.DictReader(csvFile)
+            for row in reader:
+                classData[row["Class"]] = {
+                    "description": row["Description"],
+                    "skillOptions": row["Proficiency"].split(";"),
+                    "numChoices": int(row["NumChoices"])
+                }
+        return classData
+
+
+
+    
     # ------------------------------------------------------------------
     # Functions to generate each trait type.
     # ------------------------------------------------------------------
@@ -157,7 +191,7 @@ class CharacterGenerator():
         return lstEntries
 
     def generateSkillList(self):
-        self.lstSkills = ["Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History", "Insight", "Intimidation", "Investigation", "Medicine, Nature", "Perception", "Performance", "Persuasion, Religion", "Sleight of Hand, Stealth", "Survival"]
+        self.lstSkills = ["Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History", "Insight", "Intimidation", "Investigation", "Medicine", "Nature", "Perception", "Performance", "Persuasion", "Religion", "Sleight of Hand", "Stealth", "Survival"]
         return self.lstSkills
     
     def statGeneration(self):
@@ -357,4 +391,4 @@ if __name__ == "__main__":
 
         Works and expected.
         """
-    
+    print(CharacterGenerator().generateSkills("Bard", "man", "man"))

@@ -1,7 +1,8 @@
-Appearance,Description
-Human,Boring
-Elf,Pointy Ears
-Dwarf,Short
-Halfling,Short
-Dragonborn,Rawr
-Tiefling,Hot
+Race,HairColour,SkinTone,EyeColour,Height,Build,DistinguishingFeature,SentenceTemplate
+Human,Black|Brown|Blonde|Red|Grey,Pale|Tanned|Olive|Dark brown,Blue|Brown|Green|Hazel|Grey,Short|Average|Tall,Slender|Athletic|Stocky|Muscular,A long scar across the face|Covered in tattoos|A deep gravelly voice,"A {Height}, {Build} human with {SkinTone} skin, {HairColour} hair, and {EyeColour} eyes. {DistinguishingFeature}."
+Elf,Black|Silver|White|Blonde,Pale|Fair|Golden brown,Green|Blue|Violet|Amber,Average|Tall,Slender|Athletic,Pointed ears|Angular features|A faint magical glow in the eyes,"A {Height}, {Build} elf with {SkinTone} skin, pointed ears, {HairColour} hair, and {EyeColour} eyes. Bearing {DistinguishingFeature}."
+Dwarf,Brown|Red|Black|Grey|White,Ruddy|Tanned|Ashen grey,Brown|Grey|Dark green,Short,Stocky|Muscular,A thick braided beard|Missing a finger|A soot-stained face,"A {Height}, {Build} dwarf with {SkinTone} skin, {HairColour} hair, and {EyeColour} eyes. Bearing {DistinguishingFeature}."
+Halfling,Brown|Black|Sandy blonde|Curly red,Tanned|Ruddy|Fair,Brown|Hazel|Green,Short,Slender|Stocky,Curly hair|Perpetually cheerful expression|Bare feet with tough soles,"A {Height}, {Build} halfling with {SkinTone} skin, {HairColour} hair, and {EyeColour} eyes. Bearing {DistinguishingFeature}."
+Dragonborn,None (scaled head),Red scales|Green scales|Bronze scales|Black scales|Gold scales,Gold|Silver|Red|Amber,Tall|Towering,Muscular|Athletic,A long tail|A draconic snout|Small horns,"A {Height}, {Build} dragonborn with {SkinTone} covering its body, a long tail, and {EyeColour} eyes. Bearing {DistinguishingFeature}."
+Tiefling,Black|Dark red|Deep purple,Red|Deep purple|Ashen grey|Dark blue,Solid black|Gold|Red|Silver,Average|Tall,Slender|Athletic,Curved horns|A pointed tail|Sharp elongated teeth,"A {Height}, {Build} tiefling with {SkinTone} skin and a long tail, with {HairColour} hair on its head and {EyeColour} eyes. Bearing {DistinguishingFeature}."
+Drow,White|Silver|Pale grey,Jet black|Dark grey|Charcoal,Red|Violet|Pale yellow,Average,Slender,Pointed ears|Faintly glowing eyes|Fine angular features,"A {Height}, {Build} drow with {SkinTone} skin, pointed ears, {HairColour} hair, and {EyeColour} eyes. Bearing {DistinguishingFeature}."

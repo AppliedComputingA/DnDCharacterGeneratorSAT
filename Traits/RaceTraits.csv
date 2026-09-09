@@ -1,7 +1,8 @@
-Race,Description
-Human,Boring
-Elf,Pointy Ears
-Dwarf,Short
-Halfling,Short
-Dragonborn,Rawr
-Tiefling,Hot
+Race,Description,Size,Speed,AbilityBonus
+Human,"Found throughout the multiverse, humans are as varied as they are numerous, and they endeavor to achieve as much as they can in the years they are given.",Medium,30,+1 to all stats
+Elf,"Created by the god Corellon, the first elves could change their forms at will.",Medium,30,+2 Dexterity
+Dwarf,"Dwarves were raised from the earth in the elder days by a deity of the forge.",Medium,25,+2 Constitution
+Halfling,"Cherished and guided by gods who value life, home, and hearth, halflings gravitate toward bucolic havens where family and community help shape their lives.",Small,25,+2 Dexterity
+Dragonborn,The ancestors of dragonborn hatched from the eggs of chromatic and metallic dragons.,Medium,30,+2 Strength +1 Charisma
+Tiefling,"Tieflings are either born in the Lower Planes or have fiendish ancestors who originated there.",Medium,30,+2 Charisma +1 Intelligence
+Drow,"Drow typically dwell in the Underdark and have been shaped by it.",Medium,30,+2 Dexterity +1 Charisma

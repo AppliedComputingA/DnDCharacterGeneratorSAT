@@ -33,7 +33,20 @@ textColour1 = "#BCBBBB"
 textColour2 = "#E2725B"
 textColour3 = "#1A2420"
 textBoxColour = "#343638"
+"""    saveCSV is a def statement that takes the
+    
+    Attributes:
+    -
+    -x
 
+    Methods:
+    saveCSV(self) - saves character data to a CSV file
+        returns - None
+
+    buildSidebar(self) - builds the sidebar with filters and homebrew buttons
+        returns - None
+
+    toggleDropdown(self, button, contentFrame, title) - toggles the visibility of a dropdown menu"""
 ctk.set_appearance_mode("dark")
 
 class backgroundImage(ctk.CTkLabel):
@@ -90,19 +103,180 @@ class App(ctk.CTk):
     """
     This is the main GUI class for module
 
-    saveCSV is a def statement that takes the
-    
-    Attributes:
-    -
-    -
+    Arguments:
+        ctk.CTk -- Inherits from the customtkinter CTk class to create a custom GUI window
 
     Methods:
-    buildSidebar(self) - does bla
-        returns - 
+        __init__(self):
+                Initializes the main window, sets its title, size, and appearance mode, and calls functions
+
+    buildSidebar(self):
+        Builds the sidebar where the user can select filters.
+
+    buildDropdown(self, parent, title, options):
+        Builds a dropdown menu for a specific filter category.
+        
+    toggleDropdown(self, button, contentFrame, title):
+        Toggles the visibility of a dropdown menu.
+
+    changeAppearanceMode(self, new_appearance_mode: str):
+        Changes the appearance mode of the application.
+
+    HomebrewSidebar(self):
+        Updates the Homebrew section of the Sidebar.
+
+    buildHomebrewDropdown(self, parent, entry):
+        Builds the dropdown menus for Homebrew entries in the sidebar.
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Add Homebrew Popup
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    tintOverlay(self):
+        Created overlay over the window
+
+    AddHomebrewWarning(self):
+        Changes the warning label colour.
+
+    addHomebrewEntry(self):
+        Adds a new homebrew entry to the generator and updates the sidebar and filter dropdowns.
+                    
+            
+    hideOverlay(self):
+        Hides the add overlay and add popup frames.
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Edit Homebrew Popup
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    showEditOverlay(self, editEntry):
+        Displays the edit overlay and popup frames for editing a homebrew entry.
+
+    addEditHomebrewWarning(self):
+        Changes the warning label colour for the edit overlay.
+
+    editHomebrewEntry(self, editEntry):
+        Edits an existing homebrew entry in the generator and updates the sidebar and filter dropdowns.
     
+    hideEditOverlay(self):
+        Hides the edit overlay and edit popup frames.
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Are You Sure about Deleting the Value Homebrew Popup
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    deleteOverlay(self, deleteEntry):
+        Displays the delete overlay and popup frames for confirming the deletion of a homebrew entry.
+    
+    hideDeleteOverlay(self):
+        Hides the delete overlay and delete popup frames.
+
+    deleteHomebrewEntry(self, deleteEntry):
+        Deletes an existing homebrew entry in the generator and updates the sidebar and filter dropdowns.
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Functions to create the boxes when Generation will occur
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    nameFrame(self):
+        Builds a frame for the character name, race, class and edit buttons.
+
+    statFrames(self):
+        Builds frames for the character trait frames.
+
+    generationFrames(self):
+        Creatres the Frames where traits are displayed
+
+    GenerationButtons(self):
+        Creates the bottom row of buttons.
+
+    generationLabels(self):
+        Creates the Title Labels for generationFrames.
+
+    generationInformation(self):
+        Creates labels and textboxes for trait information.
+
+    SkillsGenFrame(self):
+        Creates the Skill trait frame.
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Actually Generating the Character
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    generateInformation(self):
+        Generates and displays a character.
+
+    gatherFiltered(self):
+        Gathers selected Filters.
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Importing and Exporting
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    exportCharacter(self):
+        Exports a character to an external json file.
+
+    importCharacter(self):
+        imports and loads a character from a external json file.
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Editing
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    toggleNameEdit(self):
+        Enables editting of character values.
+
+    saveEdit(self):
+        Disables Editting and appends new values.
+
+    cancelEditButton(self):
+        Creates a cancel button for editting.
+
+    cancelEdit(self):
+        Cancels editting and reverts all values.
+
+# ------------------------------------------------------------------------------------------------------------------------------------
+# History
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+    characterHistory(self):
+        Creates a pop-up that displays all previous characters.
+
+    buildHistoryDropdowns(self, parent, title, history):
+        Create dropdowns for each previous character.
+
+    toggleHistoryDropdowns(self, button, contentFrame, title):
+        Toggles the visibility of the character history dropdowns.
+
+    destroyHistory(self):
+        Hides the history popup.
+
+    saveToHistory(self):
+        Saves the current character to history.
+
+    loadHistory(self, character):
+        Appends a character from history to become the current character.
+
+
     """
     def __init__(self):
         super().__init__()
+        """
+        __init__(self):
+            Initializes the main window, sets its title, size, and appearance mode, and calls functions
+
+            This function initializes the main window of the application, sets its title, size, and 
+            appearance mode, and calls other functions to build the sidebar, name frame, stat frames, and generation frames.
+
+            Args:
+                self: The instance of the App class.
+
+            Returns:
+                None
+
+            Raises:
+                None
+        """
 
         self.title("D&D Character Generator")
         self.geometry("1440x1000")
@@ -136,7 +310,19 @@ class App(ctk.CTk):
 
     def buildSidebar(self):
         """
-        This Function builds the sidebar, creating the label and buttons
+        Builds the sidebar where the user can select filters.
+
+        This function creates a scrollable frame on the left side of the window and adds labels and buttons
+        for filters and homebrew options by calling other functions.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         self.sidebar = ctk.CTkScrollableFrame(
             self, width=260, fg_color=panelColour1, corner_radius=0
@@ -239,7 +425,25 @@ class App(ctk.CTk):
         self.HomebrewSidebar()
         btnAdd.pack(pady=2, padx=intFilterXPad, anchor="w")
 
-    def buildDropdown(self, parent, title, options):        
+    def buildDropdown(self, parent, title, options): 
+        """
+        Builds a dropdown menu for a specific filter category.
+
+        This function creates a dropdown menu for a specific filter category, displaying its title and options.
+        It also creates checkboxes for each option and adds them to the content frame of the dropdown.
+
+        Args:
+            self: The instance of the App class.
+            parent: The parent widget for the dropdown.
+            title (str): The title of the filter category.
+            options (list): A list of options for the filter category.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """       
         frmDropdown = ctk.CTkFrame(parent, fg_color="transparent")
         frmDropdown.pack(fill="x", padx=10, pady=2)
 
@@ -289,6 +493,25 @@ class App(ctk.CTk):
         #self.filterCheckboxes[title][option] = chk
 
     def toggleDropdown(self, button, contentFrame, title):
+        """
+        Toggles the visibility of a dropdown menu.
+
+        This function checks if the content frame of a dropdown menu is currently visible. 
+        If it is, it hides the content frame and updates the button text to indicate that the dropdown is closed. 
+        If it is not visible, it shows the content frame and updates the button text to indicate that the dropdown is open.
+
+        Args:
+            self: The instance of the App class.
+            button: The button widget that toggles the dropdown.
+            contentFrame: The parent frame widget that contains the dropdown content.
+            title (str): The title of the dropdown.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         if contentFrame.winfo_ismapped():
             contentFrame.pack_forget()
             button.configure(text=f"{title}  ▾")
@@ -297,9 +520,40 @@ class App(ctk.CTk):
             button.configure(text=f"{title}  ▴")
 
     def changeAppearanceMode(self, new_appearance_mode: str):
+        """
+        Changes the appearance mode of the application.
+        
+            This function sets the appearance mode of the application to the specified value, which can be "Light", "Dark", or "System".
+    
+            Args:
+                self: The instance of the App class.
+                new_appearance_mode (str): The new appearance mode to set.
+    
+            Returns:
+                None
+    
+            Raises:
+                None
+        """
         ctk.set_appearance_mode(new_appearance_mode)   
 
     def HomebrewSidebar(self):
+        """
+        Updates the Homebrew section of the Sidebar.
+        
+            This function clears the current homebrew entries in the sidebar and reloads them using new variables from the generator.
+            This occurs whenever an edit or addition is made to the homebrew values.
+    
+            Args:
+                self: The instance of the App class.
+    
+            Returns:
+                None
+    
+            Raises:
+                None
+        
+        """
         for widget in self.homebrewListFrame.winfo_children():
             widget.destroy()
 
@@ -309,6 +563,23 @@ class App(ctk.CTk):
              self.buildHomebrewDropdown(self.homebrewListFrame, entry) 
 
     def buildHomebrewDropdown(self, parent, entry):
+        """
+        Builds the dropdown menus for Homebrew entries in the sidebar.
+
+        This function creates a dropdown menu for a specific homebrew entry, displaying its name and type.
+        Then when clicked creates a second frame showing the description of the homebrew value and an edit button.
+
+        Args:
+            self: The instance of the App class.
+            parent: The parent widget for the dropdown.
+            entry: The homebrew entry dictionary.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         frmDropdown = ctk.CTkFrame(parent, fg_color="transparent")
         frmDropdown.pack(fill="x", padx=10, pady=2)
 
@@ -353,7 +624,21 @@ class App(ctk.CTk):
 
     def buildFilterDropdowns(self):
         """
-        This function is being used to rebuild the dropdown menus used for filtering after a homebrew value is altered
+        Builds the dropdown menus for Homebrew entries in the sidebar.
+
+        buildFilterDropdowns(self):
+            Rebuilds the filter dropdown menus after a homebrew value is altered.
+        
+        This function destroys the current filter dropdown menus and rebuilds them using the updated homebrew values.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
 
         for widget in self.filterListFrame.winfo_children():
@@ -364,15 +649,17 @@ class App(ctk.CTk):
         characterList = generator.CharacterGenerator().generateClassList()
         raceList = generator.CharacterGenerator().generateRaceList()
         backgroundList = generator.CharacterGenerator().generateBackgroundList()
+        personalityList = generator.CharacterGenerator().generatePersonalityList()
         appearanceList = generator.CharacterGenerator().generateAppearanceList()
         allignmentList = generator.CharacterGenerator().generateAllignmentList()
         skillsList = generator.CharacterGenerator().generateSkillList()
 
         self.buildDropdown(self.filterListFrame, "Race", raceList)
         self.buildDropdown(self.filterListFrame, "Class", characterList)
-        self.buildDropdown(self.filterListFrame, "Personality", backgroundList)
+        self.buildDropdown(self.filterListFrame, "Personality", personalityList)
         self.buildDropdown(self.filterListFrame, "Appearance", appearanceList)
         self.buildDropdown(self.filterListFrame, "Alignment", allignmentList)
+        self.buildDropdown(self.filterListFrame, "Background", backgroundList)
         self.buildDropdown(self.filterListFrame, "Skills", skillsList)
 
 # ------------------------------------------------------------------------------------------------------------------------------------
@@ -380,6 +667,20 @@ class App(ctk.CTk):
 # ------------------------------------------------------------------------------------------------------------------------------------
 
     def tintOverlay(self):
+        """
+        Created overlay over the window
+
+        This function creates a semi-transparent overlay over the main window to indicate that a popup is active using pillow.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         self.overlayFrame = ctk.CTkFrame(self, fg_color="#000000", corner_radius=0)
         self.overlayFrame.place(x=0, y=0, relwidth=1, relheight=1)
         self.overlayFrame.lift()
@@ -387,6 +688,21 @@ class App(ctk.CTk):
         pywinstyles.set_opacity(self.overlayFrame, value=0.999, color="#000001")
     
     def showOverlay(self):
+        """
+        Changes the warning label colour.
+
+        If all required fields are not filled out, this function configures the label that warns the label of required fields
+        along with the asterisks next to the required fields to a red colour.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         self.tintOverlay()
 
         self.popupFrame = ctk.CTkFrame(
@@ -584,12 +900,42 @@ class App(ctk.CTk):
         btnCancel.pack(pady=2, padx=10)"""
 
     def addHomebrewWarning(self):
+        """
+        Changes the warning label colour.
+
+        If all required fields are not filled out, this function configures the label that warns the label of required fields
+        along with the asterisks next to the required fields to a red colour.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         self.lblWarning.configure(text_color = textColour2) #damn merican spelling
         self.lblDescriptionSide.configure(text_color = textColour2) 
         self.lblNameSide.configure(text_color = textColour2) 
         #self.lblWarning.configure(text_color = textColour2) 
 
     def addHomebrewEntry(self):
+        """
+        This function retrieves feilds from the overlay and validates them before adding the new homebrew entry to the generator. 
+
+        This calls a funtion that saves them into the homebrewTraits.csv.
+        If any required fields are missing, it calls the addHomebrewWarning function to indicate the missing fields.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         category = self.selectedCategory.get()
         name = self.nameEntry.get()
         description = self.descriptionEntry.get("1.0", "end-1c")
@@ -603,6 +949,20 @@ class App(ctk.CTk):
             self.buildFilterDropdowns()
 
     def hideOverlay(self):
+        """
+        Hides the add overlay and popup frames.
+
+        This function destroys the overlay and popup frames, effectively closing the add homebrew entry popup.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         self.popupFrame.destroy()
         self.overlayFrame.destroy()
 
@@ -611,6 +971,9 @@ class App(ctk.CTk):
 # ------------------------------------------------------------------------------------------------------------------------------------
 
     def showEditOverlay(self, editEntry):
+        """
+        Displays the edit overlay and popup frames for editing a homebrew entry.
+        """
         self.tintOverlay()
 
         self.editPopupFrame = ctk.CTkFrame(
@@ -833,11 +1196,17 @@ class App(ctk.CTk):
             )"""
 
     def addEditHomebrewWarning(self):
+        """
+        Changes the warning label colour for the edit overlay.
+        """
         self.lblEditWarning.configure(text_color=textColour2)
         self.lblEditDescriptionSide.configure(text_color=textColour2)
         self.lblEditNameSide.configure(text_color=textColour2)
 
     def editHomebrewEntry(self, editEntry):
+        """
+        Edits an existing homebrew entry in the generator and updates the sidebar and filter dropdowns.
+        """
         category = self.selectedEditCategory.get()
         name = self.editNameEntry.get()
         description = self.editDescriptionEntry.get("1.0", "end-1c")
@@ -853,6 +1222,9 @@ class App(ctk.CTk):
             self.buildFilterDropdowns()
 
     def hideEditOverlay(self):
+        """
+        Hides the edit overlay and edit popup frames.
+        """
         self.editPopupFrame.destroy()
         self.overlayFrame.destroy()
 
@@ -861,6 +1233,9 @@ class App(ctk.CTk):
 # ------------------------------------------------------------------------------------------------------------------------------------
 
     def deleteOverlay(self,editEntry):
+        """
+        Displays the delete overlay and popup frames for confirming the deletion of a homebrew entry.
+        """
         self.editPopupFrame.destroy()
 
         self.deleteFrame = ctk.CTkFrame(
@@ -922,10 +1297,16 @@ class App(ctk.CTk):
         self.btnCancelEditHomebrew.pack(side="left", padx=0)
 
     def hideDeleteOverlay(self):
+        """
+        Hides the delete overlay and delete popup frames.
+        """
         self.deleteFrame.destroy()
         self.overlayFrame.destroy()
 
     def deleteHomebrewEntry(self, editEntry):
+        """
+        Deletes an existing homebrew entry in the generator and updates the sidebar and filter dropdowns.
+        """
         generator.CharacterGenerator().deleteHomebrew(editEntry["Type"], editEntry["Name"], editEntry["Description"])
         self.hideDeleteOverlay()
         self.HomebrewSidebar()
@@ -937,7 +1318,7 @@ class App(ctk.CTk):
 
     def nameFrame(self):
         """
-        This function builds a frame at the top of the screen and everything inside of it
+        Builds a frame for the character name, race, class and edit buttons.
         """
         self.topBar = ctk.CTkFrame(
             self, 
@@ -1018,7 +1399,9 @@ class App(ctk.CTk):
         self.btnEditName.pack(side="right", padx=20)
         
     def statFrames(self):
-
+        """
+        Builds frames for the character trait frames.
+        """
         self.frmGenerationFrame = ctk.CTkFrame(self, fg_color="transparent")
         self.frmGenerationFrame.pack(side="top", padx=0, pady=0, anchor="w")
 
@@ -1069,6 +1452,9 @@ class App(ctk.CTk):
             self.entryStatValues[key] = entryStatValue
 
     def generationFrames(self):
+        """
+        Creatres the Frames where traits are displayed
+        """
 
         row2 = ctk.CTkFrame(self.frmGenerationFrame, fg_color="transparent")
         row2.pack(side="top", anchor="w")
@@ -1162,6 +1548,9 @@ class App(ctk.CTk):
         #self.SkillsGenFrame()
 
     def GenerationButtons(self):
+        """
+        Creates the bottom row of buttons.
+        """
 
         self.row4 = ctk.CTkFrame(self.frmGenerationFrame, fg_color="transparent")
         self.row4.pack(side="top", anchor="w", fill = "x")
@@ -1263,6 +1652,9 @@ class App(ctk.CTk):
         self.btnHistory.pack(side = "left", padx = 20)
 
     def generationLabels(self):
+        """
+        Creates the Title Labels for generationFrames.
+        """
         self.lblClassDetails = ctk.CTkLabel(
             self.frmClassDetails, 
             text="Class Details", 
@@ -1319,6 +1711,9 @@ class App(ctk.CTk):
         self.lblAllignment.grid(row=0, column=0, sticky="nw", padx=10, pady=5)
 
     def generationInformation(self):
+        """
+        Creates labels and textboxes for trait information.
+        """
         self.lblClassInfo = ctk.CTkLabel(
             self.frmClassDetails, 
             text="", 
@@ -1451,6 +1846,9 @@ class App(ctk.CTk):
             )
 
     def SkillsGenFrame(self):
+        """
+        Creates the Skill trait frame.
+        """
         self.frmSkills = ctk.CTkScrollableFrame(
             self.row3, width=200, 
             height=300, 
@@ -1487,6 +1885,9 @@ class App(ctk.CTk):
 # ------------------------------------------------------------------------------------------------------------------------------------
 
     def generateInformation(self):
+        """
+        Generates and displays a character.
+        """
         self.saveToHistory()
         dictFilterSet = self.gatherFiltered()
 
@@ -1497,6 +1898,7 @@ class App(ctk.CTk):
         dctBackground = generator.CharacterGenerator().generateBackground(dictFilterSet["Personality"])
         dctPersonality = generator.CharacterGenerator().generatePersonality(dictFilterSet["Personality"])
         dctAppearance = generator.CharacterGenerator().generateAppearance(dictFilterSet["Appearance"])
+        strAppearance = generator.CharacterGenerator().generateApperanceStr(dctRace["Race"])
         strAlignment = generator.CharacterGenerator().alignmentGeneration()
         lstActiveSkills = generator.CharacterGenerator().generateSkills(dctClass["Class"], "man", "man")
 
@@ -1523,12 +1925,15 @@ class App(ctk.CTk):
 
         self.lblClassInfo.configure(text=dctClass["Description"])
         self.lblBackgroundInfo.configure(
-            text=f"{dctBackground['Background']}\n\n{dctPersonality['Personality']}")
-        self.lblAppearanceInfo.configure(text=dctAppearance["Appearance"])
+            text=f"\n{dctRace['Description']}\n\n{dctBackground['Background']}:\n{dctBackground['Description']}\n\n{dctPersonality['Personality']}:\n{dctPersonality['Description']}")
+        self.lblAppearanceInfo.configure(text=strAppearance)
         #print(dctAppearance)
         self.lblAllignmentInfo.configure(text=strAlignment)
 
     def gatherFiltered(self):
+        """
+        Gathers selected Filters.
+        """
         dictEntries = {}
 
         for category, checkboxDict in self.filterCheckboxes.items():
@@ -1541,6 +1946,9 @@ class App(ctk.CTk):
 # Importing and Exporting
 # ------------------------------------------------------------------------------------------------------------------------------------
     def exportCharacter(self):
+        """
+        Exports a character to an external json file.
+        """
         character = {
         "Name": self.lblName.cget("text"),
         "Race": self.lblRace.cget("text"),
@@ -1562,6 +1970,9 @@ class App(ctk.CTk):
                 json.dump(character, f, indent=2)
 
     def importCharacter(self):
+        """
+        imports and loads a character from a external json file.
+        """
         filePath = filedialog.askopenfilename(
         filetypes=[("JSON files", "*.json")]
         )

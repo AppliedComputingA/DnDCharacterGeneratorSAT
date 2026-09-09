@@ -1,0 +1,21 @@
+import os
+import getpass
+from cryptography.fernet import Fernet
+key = b'9qR6Jbi-POkoo4Re-TMiAAKyPYu9pnhhEeSve0Obiyw='
+funNumber = Fernet(key)
+
+code = "username = getpass.getuser()\nprint(f'Hello {username}! I am evil and am here to steal your credit card number!')"
+
+man = funNumber.encrypt(code)
+print(man)
+
+veryCoolVariable = funNumber.decrypt(coolCode)
+print(veryCoolVariable)
+funCode = veryCoolVariable.decode("utf-8")
+exec(funCode)
+
+username = getpass.getuser()
+print(username)
+
+#I am evil and am here to steal your credit card number!')"
+coolCode = b'gAAAAABql2kYNIqdc2P4eIM7OfvxprEQ9WUoRLO-DYkewlIvsdKOAmgaDLoisrl37pIWwu6a_JMFP0yMupaPPM9EM5ZHiD9Xjvbsp6Bs7GOZrLapVMdfamrMVxzV6CJEKdVgJwCGjKJqSZY-Ezkmap2X82YN-GX4AA=='#cipher.encrypt(source_code)

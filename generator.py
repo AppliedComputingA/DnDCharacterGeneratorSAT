@@ -86,6 +86,32 @@ class CharacterGenerator():
             pass
         return lstEntries
         
+    def generateAppearanceValue(self, filterSet):
+        lstEntries = []
+        try:
+            try:
+                with open(self.AppearanceLocation, newline='', encoding='utf-8-sig') as csvfile:
+                    reader = csv.DictReader(csvfile)
+                    for row in reader:
+                        if row['Race'] == filterSet:
+                            lstEntries.append(row)
+
+            except FileNotFoundError:
+                pass
+
+            dctRow = lstEntries[0]
+
+            dctChosen = {}
+            for strKey in ("HairColour", "SkinTone", "EyeColour", "Height", "Build", "DistinguishingFeature"):
+                lstOptions = dctRow[strKey].split("|")
+                dctChosen[strKey] = random.choice(lstOptions)
+
+            return dctRow["SentenceTemplate"].format(**dctChosen)
+        except:
+            return "An excited adventurer, ready to begin their journey."
+        #return lstEntries
+
+
 
     # ------------------------------------------------------------------
     # Functions to generate each trait type.
@@ -112,6 +138,9 @@ class CharacterGenerator():
     def generateAppearance(self, filterSet):
         return self.generateTrait(self.AppearanceLocation, "Appearance", filterSet)
 
+    def generateApperanceStr(self, traitValue):
+        return self.generateAppearanceValue(traitValue)
+    
     def generateSkills(self, characterClass, background, filterSet):
         """lstEntries = []
         skillList = self.generateSkillList()
@@ -121,16 +150,31 @@ class CharacterGenerator():
             skillValue = skillList[each]
             lstEntries.append(skillValue)
         return lstEntries"""
-        classData = self.loadClassSkills()
-        classInfo = classData.get(characterClass)
+        try:
+            classData = self.loadClassSkills()
+            classInfo = classData.get(characterClass)
 
-        skillPool = classInfo["skillOptions"]
-        numToPick = classInfo["numChoices"]
+            skillPool = classInfo["skillOptions"]
+            numToPick = classInfo["numChoices"]
 
-        lstEntries = random.sample(skillPool, numToPick)
+            lstEntries = random.sample(skillPool, numToPick)
+
+        except:
+            lstEntries = []
+            skillList = self.generateSkillList()
+            skillNumbers = random.sample(range(0, len(skillList)), 4)
+            for each in skillNumbers:
+                skillValue = skillList[each]
+                lstEntries.append(skillValue)
 
         return lstEntries
-    
+
+
+        return lstEntries
+
+
+        return self.generateTrait(self.AppearanceLocation, "Appearance", filterSet)
+
     def loadClassSkills(self):
         classData = {}
         with open("Traits/ClassTraits.csv", newline='', encoding='utf-8') as csvFile:
@@ -176,7 +220,7 @@ class CharacterGenerator():
     
     def generateAppearanceList(self):
         rows = self.generateFeatureList(self.AppearanceLocation, "Appearance")
-        return [row["Appearance"] for row in rows]
+        return [row["Race"] for row in rows]
 
     def generateAllignmentList(self):
         axis1 = ["Lawful", "Neutral", "Chaotic"]
@@ -391,4 +435,5 @@ if __name__ == "__main__":
 
         Works and expected.
         """
-    print(CharacterGenerator().generateSkills("Bard", "man", "man"))
+    print(CharacterGenerator().generateAppearanceValue("Drow"))
+    

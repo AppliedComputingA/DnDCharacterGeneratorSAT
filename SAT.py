@@ -973,6 +973,19 @@ class App(ctk.CTk):
     def showEditOverlay(self, editEntry):
         """
         Displays the edit overlay and popup frames for editing a homebrew entry.
+
+        This function creates a semi-transparent overlay over the main window and displays a popup frame for editing a specific 
+        homebrew entry. This includes creating an delete button.
+
+        Args:
+            self: The instance of the App class.
+            editEntry: The homebrew entry dictionary to be edited.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         self.tintOverlay()
 
@@ -1198,6 +1211,18 @@ class App(ctk.CTk):
     def addEditHomebrewWarning(self):
         """
         Changes the warning label colour for the edit overlay.
+
+        If all required fields are not filled out, this function configures the label that warns the label of required fields
+        along with the asterisks next to the required fields to a red colour.
+        
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         self.lblEditWarning.configure(text_color=textColour2)
         self.lblEditDescriptionSide.configure(text_color=textColour2)
@@ -1206,6 +1231,21 @@ class App(ctk.CTk):
     def editHomebrewEntry(self, editEntry):
         """
         Edits an existing homebrew entry in the generator and updates the sidebar and filter dropdowns.
+
+        This functions collects the catergory, name and description from the edit overlay and validates them 
+        before calling the editHomebrew function in the from generator to change the homebrew entry. Then
+        updates the sidebar and filter dropdowns.
+        Displays the edit overlay and popup frames for editing a homebrew entry.
+
+        Args:
+            self: The instance of the App class.
+            editEntry: The homebrew entry dictionary to be edited.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         category = self.selectedEditCategory.get()
         name = self.editNameEntry.get()
@@ -1224,6 +1264,18 @@ class App(ctk.CTk):
     def hideEditOverlay(self):
         """
         Hides the edit overlay and edit popup frames.
+
+        This function destroys the edit overlay and edit popup frames, closing the edit homebrew entry popup.
+        Displays the edit overlay and popup frames for editing a homebrew entry.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         self.editPopupFrame.destroy()
         self.overlayFrame.destroy()
@@ -1235,6 +1287,19 @@ class App(ctk.CTk):
     def deleteOverlay(self,editEntry):
         """
         Displays the delete overlay and popup frames for confirming the deletion of a homebrew entry.
+
+        This function creates a destroys in the edit popup frame and creates a new pop for confirming deletion of a homebrew entry.
+        It includes a confirmation button and a cancel button along with warning text.
+
+        Args:
+            self: The instance of the App class.
+            editEntry: The homebrew entry dictionary to be deleted.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         self.editPopupFrame.destroy()
 
@@ -1299,6 +1364,18 @@ class App(ctk.CTk):
     def hideDeleteOverlay(self):
         """
         Hides the delete overlay and delete popup frames.
+
+        Destroys the delete popup and popup overlay, closing them.
+        
+        Args:
+            self: The instance of the App class.
+            editEntry: The homebrew entry dictionary to be deleted.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         self.deleteFrame.destroy()
         self.overlayFrame.destroy()
@@ -1306,6 +1383,19 @@ class App(ctk.CTk):
     def deleteHomebrewEntry(self, editEntry):
         """
         Deletes an existing homebrew entry in the generator and updates the sidebar and filter dropdowns.
+
+        This function calls the deleteHomebrew function in the generator to remove the specified homebrew entry.
+        Then it closes the popup and updates the sidebar and filter dropdowns.
+
+        Args:
+            self: The instance of the App class.
+            editEntry: The homebrew entry dictionary to be deleted.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         generator.CharacterGenerator().deleteHomebrew(editEntry["Type"], editEntry["Name"], editEntry["Description"])
         self.hideDeleteOverlay()
@@ -1319,6 +1409,19 @@ class App(ctk.CTk):
     def nameFrame(self):
         """
         Builds a frame for the character name, race, class and edit buttons.
+
+        This function creates a frame at the top of the application displaying labels for the character's name, 
+        with race and class below. It also includes an edit button that allows the user to toggle
+        editing the character's traits.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         self.topBar = ctk.CTkFrame(
             self, 
@@ -1401,6 +1504,19 @@ class App(ctk.CTk):
     def statFrames(self):
         """
         Builds frames for the character trait frames.
+
+        This functions creates the frame that contains all character traits. It then creates in row to contain invididual
+        frames for each stat from a dictionary of stats generated by the CharacterGenerator. Each stat frame contains a 
+        label for the stat name, a label for the stat value, and an entry field for the stat value that is not packed.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         self.frmGenerationFrame = ctk.CTkFrame(self, fg_color="transparent")
         self.frmGenerationFrame.pack(side="top", padx=0, pady=0, anchor="w")
@@ -1453,7 +1569,19 @@ class App(ctk.CTk):
 
     def generationFrames(self):
         """
-        Creatres the Frames where traits are displayed
+        Creates the Frames where traits are displayed.
+
+        Creates frames for each trait catergory. These frames in included in rows created to create the desired grid layout.
+        row2 includes the class and background frames, row3 includes the appearance, skills, alignment and notes frames.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
 
         row2 = ctk.CTkFrame(self.frmGenerationFrame, fg_color="transparent")
@@ -1550,6 +1678,18 @@ class App(ctk.CTk):
     def GenerationButtons(self):
         """
         Creates the bottom row of buttons.
+
+        Creates a row of buttons included in frame named row4. These buttons are used to import, export, 
+        view previous characters and actualling generate the character.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
 
         self.row4 = ctk.CTkFrame(self.frmGenerationFrame, fg_color="transparent")
@@ -1654,6 +1794,18 @@ class App(ctk.CTk):
     def generationLabels(self):
         """
         Creates the Title Labels for generationFrames.
+
+        This function creates labels for each trait frame. These labels are placed at the top of each frame and display the Title of the
+        trait.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         self.lblClassDetails = ctk.CTkLabel(
             self.frmClassDetails, 
@@ -1713,6 +1865,18 @@ class App(ctk.CTk):
     def generationInformation(self):
         """
         Creates labels and textboxes for trait information.
+
+        Creates labels and textboxes for each trait frame. The labels are used to display the information generated for each trait, 
+        while the textboxes are used to allow the user to edit the information but are not yet packed.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         self.lblClassInfo = ctk.CTkLabel(
             self.frmClassDetails, 
@@ -1848,6 +2012,19 @@ class App(ctk.CTk):
     def SkillsGenFrame(self):
         """
         Creates the Skill trait frame.
+
+        Creates the frame for the skills trait. This frame contains a label for the title and a list of checkboxes 
+        for each skill generated by the CharacterGenerator. On creation the checkboxes are disabled and cannot be interacted with.
+        The checkboxes are used to display which skills are active for the generated character until further use.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         self.frmSkills = ctk.CTkScrollableFrame(
             self.row3, width=200, 
@@ -1887,6 +2064,18 @@ class App(ctk.CTk):
     def generateInformation(self):
         """
         Generates and displays a character.
+
+        This function gathers the selected filters, generates a character using the CharacterGenerator functions from generator, 
+        and configures the relevant labels in the GUI with the generated character's information to display them.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         self.saveToHistory()
         dictFilterSet = self.gatherFiltered()
@@ -1933,6 +2122,18 @@ class App(ctk.CTk):
     def gatherFiltered(self):
         """
         Gathers selected Filters.
+
+        This function iterates through the filterCheckboxes dictionary, checking the state of each checkbox.
+        It creates a new dictionary containing the selected options for each category, which is then returned.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            dictEntries (dict): A dictionary containing the selected options for each category.
+
+        Raises:
+            None
         """
         dictEntries = {}
 

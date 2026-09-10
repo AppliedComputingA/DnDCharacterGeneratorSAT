@@ -2149,6 +2149,18 @@ class App(ctk.CTk):
     def exportCharacter(self):
         """
         Exports a character to an external json file.
+
+        This function gathers the character's information from the GUI labels and creates a dictionary representing the character.
+        It then opens a file dialog to allow the user to choose a location and filename for saving as a json file.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            dictEntries (dict): A dictionary containing the selected options for each category.
+
+        Raises:
+            None
         """
         character = {
         "Name": self.lblName.cget("text"),
@@ -2173,6 +2185,18 @@ class App(ctk.CTk):
     def importCharacter(self):
         """
         imports and loads a character from a external json file.
+
+        This function opens a file dialog to allow the user to select a json file containing a character's information.
+        It then reads the file, loads the character's information into a dictionary, and updates the GUI labels with the loaded character's information.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         filePath = filedialog.askopenfilename(
         filetypes=[("JSON files", "*.json")]
@@ -2200,6 +2224,21 @@ class App(ctk.CTk):
 # ------------------------------------------------------------------------------------------------------------------------------------
 
     def toggleNameEdit(self):
+        """
+        Enables editting of character values.
+
+        This function replaces the labels displaying character traits with textboxes, allowing the user to edit the characters traits.
+        It also changes the edit button to a save button while also packing a cancel button to allow the user to cancel the edit and revert to the original values.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            dictEntries (dict): A dictionary containing the selected options for each category.
+
+        Raises:
+            None
+        """
         
         if self.isEditingName == False:
 
@@ -2249,6 +2288,9 @@ class App(ctk.CTk):
             self.saveEdit()
 
     def saveEdit(self):
+        """
+        Disables Editting and appends new values.
+        """
         for key in self.lblStatValues:
             self.lblStatValues[key].configure(text=self.entryStatValues[key].get())
             self.entryStatValues[key].delete(0, "end")
@@ -2297,6 +2339,9 @@ class App(ctk.CTk):
         self.GenerationButtons()
 
     def cancelEditButton(self):
+        """
+        Creates a cancel button for editting.
+        """
         self.btnCancelEdit = ctk.CTkButton(
             self.topBar,
             #image=self.editIcon,
@@ -2316,6 +2361,21 @@ class App(ctk.CTk):
         self.btnCancelEdit.pack(side="right", padx=20)
 
     def cancelEdit(self):
+        """
+        Cancels editting and reverts all values.
+        
+        This function reverts all character trait values to their original state before editting. It clears the entry fields and textboxes,
+        repacks the labels and disables the skill checkboxes. It also removes the cancel button and restores the generation buttons.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            dictEntries (dict): A dictionary containing the selected options for each category.
+
+        Raises:
+            None
+        """
         self.entryName.delete(0, "end")
         self.entryRace.delete(0, "end")
         self.entryClass.delete(0, "end")
@@ -2338,7 +2398,7 @@ class App(ctk.CTk):
             lbl.grid()
 
         for chk in self.skillsList:
-            self.skillCheckboxes[chk].configure(state="disbled")
+            self.skillCheckboxes[chk].configure(state="disabled")
 
         self.entryName.pack_forget()
         self.lblName.pack(side="left")
@@ -2361,7 +2421,20 @@ class App(ctk.CTk):
 
     def characterHistory(self):
             """
-            Make an Overlay that shows all character history
+            Make an Overlay that shows all character history.
+
+            This function creates an overlay frame that displays the history of generated characters. It creates a new frame for the history,
+            and populates it with dropdowns for each character in the history list. Each dropdown contains the character's information and a 
+            "Load" button to load the character's details into the main interface.
+
+            Args:
+                self: The instance of the App class.
+
+            Returns:
+                dictEntries (dict): A dictionary containing the selected options for each category.
+
+            Raises:
+            None
             """
             self.tintOverlay()
 
@@ -2413,6 +2486,21 @@ class App(ctk.CTk):
                 self.buildHistoryDropdowns(self.characterFrame, each.get("Name", ""), each)
 
     def buildHistoryDropdowns(self, parent, title, history):
+        """
+        Create dropdowns for each previous character.
+
+        This function creates a dropdown for each character in the history list. Each dropdown displays the character's name and contains
+        the character's information along with a "Load" button to load the character's details into the main interface.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            dictEntries (dict): A dictionary containing the selected options for each category.
+
+        Raises:
+        None
+        """
         frmDropdown = ctk.CTkFrame(parent, fg_color="transparent")
         frmDropdown.pack(fill="x", padx=10, pady=2)
 

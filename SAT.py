@@ -2290,6 +2290,18 @@ class App(ctk.CTk):
     def saveEdit(self):
         """
         Disables Editting and appends new values.
+
+        Collects the text from the textboxes and entry fields, configures the labels to contain the new values, 
+        and disables the skill checkboxes. It also removes the cancel button and restores the generation buttons.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         for key in self.lblStatValues:
             self.lblStatValues[key].configure(text=self.entryStatValues[key].get())
@@ -2371,7 +2383,7 @@ class App(ctk.CTk):
             self: The instance of the App class.
 
         Returns:
-            dictEntries (dict): A dictionary containing the selected options for each category.
+            None
 
         Raises:
             None
@@ -2494,6 +2506,9 @@ class App(ctk.CTk):
 
         Args:
             self: The instance of the App class.
+            parent: The parent frame where the dropdowns will be created.
+            title: The title of the dropdown, which is the character's name.
+            history: A dictionary containing the character's information.
 
         Returns:
             dictEntries (dict): A dictionary containing the selected options for each category.
@@ -2546,6 +2561,25 @@ class App(ctk.CTk):
         btnEdit.pack(side="right", anchor="w", padx=5, pady=(5, 5))
         
     def toggleHistoryDropdowns(self, button, contentFrame, title):
+        """
+        Toggles the visibility of the character history dropdowns.
+
+        This function toggles the visibility of the dropdown menu containing the character's information.
+        If the dropdown is visible, it will be hidden and the button text will be updated to show a down arrow. 
+        If the dropdown is hidden, it will be shown and the button text will be updated to show an up arrow.
+
+        Args:
+            self: The instance of the App class.
+            button: The button widget that controls the dropdown visibility.
+            contentFrame: The frame containing the character's information.
+            title: The title of the dropdown.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         if contentFrame.winfo_ismapped():
             contentFrame.pack_forget()
             button.configure(text=f"{title}  ▾")
@@ -2554,10 +2588,38 @@ class App(ctk.CTk):
             button.configure(text=f"{title}  ▴")
 
     def destroyHistory(self):
+        """
+        Hides the history popup.
+        
+        This function destroys the history frame and the overlay frame.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         self.historyFrame.destroy()
         self.overlayFrame.destroy()
 
     def saveToHistory(self):
+        """
+        Saves the current character to history.
+
+        This function collects all contents of trait labels and appends them to a dicto
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            Nonenary.
+        """
         self.lstCharacterHistory.append({
                 "Name": self.lblName.cget("text"),
                 "Race": self.lblRace.cget("text"),
@@ -2570,6 +2632,21 @@ class App(ctk.CTk):
                 })
 
     def loadHistory(self, character):
+        """
+        Appends a character from history to become the current character.
+
+        This function takes a character dictionary from  history  and updates the trait labels with the characters information.
+
+        Args:
+            self: The instance of the App class.
+            character: A dictionary containing the character's information.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         self.lblName.configure(text=character.get("Name", ""))
         self.lblRace.configure(text=character.get("Race", ""))
         self.lblClass.configure(text=character.get("Class", ""))

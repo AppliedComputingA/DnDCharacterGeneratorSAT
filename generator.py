@@ -6,6 +6,123 @@ import random
 #Remember for later
 
 class CharacterGenerator():
+    """
+    This class is used to generate a random character for the DnD Character Generator.
+
+    Arguments:
+        None
+
+    Methods:
+        _init_(self): 
+            Initializes the class and sets the file locations for the CSV files.
+
+        generateTrait(self, fileLocation, traitSet, filterSet):
+            Generates a random trait from a specified CSV file.
+        
+        generateFeatureList(self, fileLocation, traitSet):
+            Builds a descriptive appearance sentence for a given race.
+ 
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Functions to generate each trait type.
+# ------------------------------------------------------------------------------------------------------------------------------------
+ 
+        generateRace(self, filterSet):
+            Generates a single random race trait.
+ 
+        generateClass(self, filterSet):
+            Generates a single random class trait.
+ 
+        generateBackground(self, filterSet):
+            Generates a single random background trait.
+ 
+        generateHomebrew(self):
+            Generates a single random Homebrew trait entry.
+ 
+        generateName(self):
+            Generates a single random name trait.
+ 
+        generatePersonality(self, filterSet):
+            Generates a single random personality trait.
+ 
+        generateAppearance(self, filterSet):
+            Generates a single random appearance trait row.
+ 
+        generateApperanceStr(self, traitValue):
+            Builds a descriptive appearance sentence for a given race.
+ 
+        generateSkills(self, characterClass, background, filterSet):
+            Picks a set of skill proficiencies for a character's class.
+ 
+        loadClassSkills(self):
+            Loads skill proficiency options for every class from the class traits CSV.
+ 
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Functions to list every available option for each trait type.
+# ------------------------------------------------------------------------------------------------------------------------------------
+ 
+        generateRaceList(self):
+            Lists every available race name.
+ 
+        generateClassList(self):
+            Lists every available class name.
+ 
+        generateBackgroundList(self):
+            Lists every available background name.
+ 
+        generateHomebrewList(self):
+            Lists every available Homebrew entry name.
+ 
+        generateNameList(self):
+            Lists every available name.
+ 
+        generatePersonalityList(self):
+            Lists every available personality trait name.
+ 
+        generateAppearanceList(self):
+            Lists every race name that has appearance data.
+ 
+        generateAllignmentList(self):
+            Lists every possible alignment combination.
+ 
+        generateSkillList(self):
+            Lists every possible skill name.
+ 
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Random attribute generation.
+# ------------------------------------------------------------------------------------------------------------------------------------
+ 
+        statGeneration(self):
+            Generates stats scores for a character.
+ 
+        alignmentGeneration(self):
+            Generates a random alignment for the character.
+ 
+        NameGeneration(self):
+            Generates a random name for the character.
+ 
+# ------------------------------------------------------------------------------------------------------------------------------------
+# Homebrew management.
+# ------------------------------------------------------------------------------------------------------------------------------------
+ 
+        addHomebrew(self, type, name, description):
+            Adds a homebrew trait to the HomebrewValues.csv file.
+ 
+        editHomebrew(self, oldType, oldName, newType, newName, newdescription):
+            Edits a homebrew trait in the HomebrewValues.csv file.
+ 
+        deleteHomebrew(self, type, name, description):
+            Deletes a homebrew trait from the HomebrewValues.csv file.
+ 
+        applyFilters(self, traitSet, filters):
+            Placeholder for future filter-application logic.
+ 
+        loadHomebrew(self, filePath="Traits/HomebrewValues.csv"):
+            Loads and alphabetically sorts every Homebrew entry.
+ 
+        homebrewValues(self, traitType):
+            Returns the name of all Homebrew values matching a given type.
+
+    """
     def __init__(self):
         self.raceLocation = "Traits/RaceTraits.csv"
         self.classLocation = "Traits/ClassTraits.csv"
@@ -16,6 +133,9 @@ class CharacterGenerator():
         self.AppearanceLocation = "Traits/AppearanceTraits.csv"
 
     def generateTrait(self, fileLocation, traitSet, filterSet):
+        """
+        Generates a random trait from a specified csv file.
+        """
         location = fileLocation
         if location is None:
             raise ValueError(f"File location not found")

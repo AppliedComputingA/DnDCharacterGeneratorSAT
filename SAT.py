@@ -2176,6 +2176,7 @@ class App(ctk.CTk):
         self.saveToHistory()
         dictFilterSet = self.gatherFiltered()
         appearanceFilters = self.gatherAppearance()
+        #print(appearanceFilters)
 
         strName = generator.CharacterGenerator().NameGeneration()
         dctClass = generator.CharacterGenerator().generateClass(dictFilterSet["Class"])
@@ -2184,7 +2185,7 @@ class App(ctk.CTk):
         dctBackground = generator.CharacterGenerator().generateBackground(dictFilterSet["Background"])
         dctPersonality = generator.CharacterGenerator().generatePersonality(dictFilterSet["Personality"])
         dctAppearance = generator.CharacterGenerator().generateAppearance(dictFilterSet["Race"])
-        if dictFilterSet == {'Hair Colour': [], 'Skin Tone': [], 'Eye Colour': [], 'Height': [], 'Build': [], 'Distinguishing Feature': []}:
+        if dictFilterSet != {'Hair Colour': [], 'Skin Tone': [], 'Eye Colour': [], 'Height': [], 'Build': [], 'Distinguishing Feature': []}:
             strAppearance = generator.CharacterGenerator().createFilteredAppearance(appearanceFilters, dctRace["Race"])
         else:
             strAppearance = generator.CharacterGenerator().generateApperanceStr(dctRace["Race"])

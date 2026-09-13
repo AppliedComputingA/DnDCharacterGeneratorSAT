@@ -126,7 +126,7 @@ class CharacterGenerator():
     def __init__(self):
         self.raceLocation = "Traits/RaceTraits.csv"
         self.classLocation = "Traits/ClassTraits.csv"
-        self.backgroundLocation = "Traits/Background Traits.csv"
+        self.backgroundLocation = "Traits/BackgroundTraits.csv"
         self.HomebrewLocation = "Traits/HomebrewTraits.csv"
         self.NameLocation = "Traits/NameTraits.csv"
         self.PersonalityLocation = "Traits/PersonalityTraits.csv"
@@ -135,6 +135,18 @@ class CharacterGenerator():
     def generateTrait(self, fileLocation, traitSet, filterSet):
         """
         Generates a random trait from a specified csv file.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+            fileLocation: Path to the CSV file.
+            traitSet: The trait category name.
+            filterSet: A list of allowed values to restrict entries to.
+ 
+        Returns:
+            dict: The randomly selected trait row.
+ 
+        Raises:
+            ValueError: If fileLocation is None.
         """
         location = fileLocation
         if location is None:
@@ -231,6 +243,24 @@ class CharacterGenerator():
             return "An excited adventurer, ready to begin their journey."
         #return lstEntries
 
+    def createFilteredAppearance(self, appearanceFilters, Race):
+        appearanceOptions = self.generateAppearanceDict()
+        try:
+            dctChosen = {}
+            for strKey, lstOptions in appearanceFilters.items():
+                #if lstOptions:
+                #    dctChosen[strKey] = random.choice(lstOptions)
+                lstAvailable = appearanceFilters.get(strKey) or lstOptions
+                dctChosen[strKey] = random.choice(lstAvailable)
+
+            return (f"A {dctChosen['Height']}, {dctChosen['Build']} {Race} with "
+                    f"{dctChosen['Skin Tone']} skin, {dctChosen['Hair Colour']} hair, "
+                    f"and {dctChosen['Eye Colour']} eyes. Bearing "
+                    f"{dctChosen['Distinguishing Feature']}.")
+        except:
+            print("fuuuck")
+            print(appearanceFilters)
+            return "Not All Selected"
 
 
     # ------------------------------------------------------------------
@@ -256,7 +286,7 @@ class CharacterGenerator():
         return self.generateTrait(self.PersonalityLocation, "Personality", filterSet)
 
     def generateAppearance(self, filterSet):
-        return self.generateTrait(self.AppearanceLocation, "Appearance", filterSet)
+        return self.generateTrait(self.AppearanceLocation, "Race", filterSet)
 
     def generateApperanceStr(self, traitValue):
         return self.generateAppearanceValue(traitValue)
@@ -277,23 +307,45 @@ class CharacterGenerator():
             skillPool = classInfo["skillOptions"]
             numToPick = classInfo["numChoices"]
 
-            lstEntries = random.sample(skillPool, numToPick)
+            #lstEntries = random.sample(skillPool, numToPick)
+
+            if filterSet:
+                filteredSkills = [skill for skill in skillPool if skill in filterSet]
+                if filteredSkills:
+                    skillPool = filteredSkills
+
+            numToPick = min(numToPick, len(skillPool))
+            chosenSkills = random.sample(skillPool, numToPick)
 
         except:
-            lstEntries = []
+            chosenSkills = []
             skillList = self.generateSkillList()
-            skillNumbers = random.sample(range(0, len(skillList)), 4)
+
+            if filterSet:
+                filteredList = [skill for skill in skillList if skill in filterSet]
+                if filteredList:
+                    skillList = filteredList
+
+            numToPick = min(4, len(skillList))
+            skillNumbers = random.sample(range(0, len(skillList)), numToPick)
             for each in skillNumbers:
                 skillValue = skillList[each]
-                lstEntries.append(skillValue)
+                chosenSkills.append(skillValue)
+
+        try:
+            backgroundData = self.loadBackgroundSkills()
+            backgroundSkills = backgroundData.get(background, [])
+        except:
+            backgroundSkills = []
+
+        lstEntries = list(dict.fromkeys(chosenSkills + backgroundSkills))
 
         return lstEntries
 
+        #return lstEntries
 
-        return lstEntries
 
-
-        return self.generateTrait(self.AppearanceLocation, "Appearance", filterSet)
+        #return self.generateTrait(self.AppearanceLocation, "Appearance", filterSet)
 
     def loadClassSkills(self):
         classData = {}
@@ -307,12 +359,36 @@ class CharacterGenerator():
                 }
         return classData
 
+    def loadBackgroundSkills(self):
+        """
+        Loads the fixed skill proficiencies granted by each background
+        from the Background traits CSV (semicolon-separated skill names).
+        """
+        backgroundSkills = {}
+        with open(self.backgroundLocation, newline='', encoding='utf-8') as csvFile:
+            reader = csv.DictReader(csvFile)
+            for row in reader:
+                backgroundSkills[row["Background"]] = [
+                    skill.strip() for skill in row["SkillProficiencies"].split(";") if skill.strip()
+                ]
+        return backgroundSkills
+
 
 
     
     # ------------------------------------------------------------------
     # Functions to generate each trait type.
     # ------------------------------------------------------------------
+    def generateAppearanceDict(self):
+        appearanceDictionary = {
+                        "Hair Colour": ["Black", "Blonde", "Brown", "Curly red", "Dark red", "Deep purple", "Grey", "None (scaled head)", "Pale grey", "Red", "Sandy blonde", "Silver", "White"],
+                        "Skin Tone": ["Ashen grey", "Black scales", "Bronze scales", "Charcoal", "Dark blue", "Dark brown", "Dark grey", "Deep purple", "Fair", "Gold scales", "Golden brown", "Green scales", "Jet black", "Olive", "Pale", "Red", "Red scales", "Ruddy", "Tanned"],
+                        "Eye Colour": ["Amber", "Blue", "Brown", "Dark green", "Gold", "Green", "Grey", "Hazel", "Pale yellow", "Red", "Silver", "Solid black", "Violet"],
+                        "Height": ["Average", "Short", "Tall", "Towering"],
+                        "Build": ["Athletic", "Muscular", "Slender", "Stocky"],
+                        "Distinguishing Feature": ["A deep gravelly voice", "A draconic snout", "A faint magical glow in the eyes", "A long scar across the face", "A long tail", "A pointed tail", "A soot-stained face", "A thick braided beard", "Angular features", "Bare feet with tough soles", "Covered in tattoos", "Curly hair", "Curved horns", "Faintly glowing eyes", "Fine angular features", "Missing a finger", "Perpetually cheerful expression", "Pointed ears", "Sharp elongated teeth", "Small horns"]
+                    }
+        return appearanceDictionary
 
     def generateRaceList(self):
         rows = self.generateFeatureList(self.raceLocation, "Race")
@@ -370,7 +446,7 @@ class CharacterGenerator():
             abilityScores[ability] = sum(rolls)
         return abilityScores
 
-    def alignmentGeneration(self):
+    def alignmentGeneration(self, filterSet=None):
         """
         This function generates a random alignment for the character.
         This will be done by rolling a d9 and assigning an alignment based on the roll.
@@ -379,8 +455,13 @@ class CharacterGenerator():
         intRoll2 = random.randint(1, 3)
         axis1 = ["Lawful", "Neutral", "Chaotic"]
         axis2 = ["Good", "Neutral", "Evil"]
-        characterAlignment = axis1[intRoll1 - 1] + " " + axis2[intRoll2 - 1]
-        return characterAlignment
+        if filterSet:
+            roll = random.randint(1, len(filterSet)) - 1
+            traitValue = filterSet[roll]
+            return traitValue
+        else:
+            characterAlignment = axis1[intRoll1 - 1] + " " + axis2[intRoll2 - 1]
+            return characterAlignment
 
     def NameGeneration(self):
         """

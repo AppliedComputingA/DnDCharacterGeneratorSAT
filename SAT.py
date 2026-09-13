@@ -492,6 +492,102 @@ class App(ctk.CTk):
 
         #self.filterCheckboxes[title][option] = chk
 
+    def appearanceDropdown(self, parent, title):
+        """
+        Builds a dropdown menu for a appearance category.
+
+        This function creates a dropdown menu for a specific filter category, displaying its title and options.
+        It also creates checkboxes for each option and adds them to the content frame of the dropdown.
+
+        Args:
+            self: The instance of the App class.
+            parent: The parent widget for the dropdown.
+            title (str): The title of the filter category.
+            options (list): A list of options for the filter category.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """       
+
+        
+        self.appearanceDictionary = generator.CharacterGenerator().generateAppearanceDict()
+        
+        frmDropdown = ctk.CTkFrame(parent, fg_color="transparent")
+        frmDropdown.pack(fill="x", padx=10, pady=2)
+
+        contentFrame = ctk.CTkFrame(frmDropdown, fg_color=colour3)
+
+        toggleBtn = ctk.CTkButton(
+            frmDropdown, text=f"{title}  ▾",
+            font=("Inter", 16, "bold"),
+            fg_color=colour6, hover_color=colourButtonHover,
+            corner_radius=8, height=40, width=240,
+            anchor="w", border_spacing=10,
+            command=lambda: self.toggleDropdown(toggleBtn, contentFrame, title)
+        )
+        toggleBtn.pack()
+
+        warningLabel = ctk.CTkLabel(
+                        contentFrame, 
+                        text="Unselected fields will be filled with a random option.\n\nIf nothing is picked class Specific Features will be selected for NON-HOMEBREW races.", 
+                        anchor="w",
+                        fg_color="transparent",
+                        text_color=textColour2,
+                        wraplength=220,
+                        font=("Inter", 10, "bold"),
+                        compound="left"
+                    )
+        warningLabel.pack(anchor="w", padx=10, pady=(8, 2))
+        
+
+        if not hasattr(self, "filterCheckboxes"):
+            self.filterCheckboxes = {}
+        self.filterCheckboxes[title] = {}
+
+        homebrewNames = generator.CharacterGenerator().homebrewValues(title)
+
+        filterHomebrewIcon = ctk.CTkImage(
+            light_image=Image.open("icons/homebrewIcon.png"),
+            dark_image=Image.open("icons/homebrewIcon.png"),
+            size=(20, 20)
+            )
+
+        for section, traits in self.appearanceDictionary.items():
+
+            sectionLabel = ctk.CTkLabel(
+                    contentFrame, 
+                    text=section, 
+                    anchor="w",
+                    fg_color="transparent",
+                    font=("Inter", 20, "bold"),
+                    compound="left"
+                )
+            sectionLabel.pack(anchor="w", fill="x", padx=10, pady=(8, 2))
+            
+            for trait in traits:
+                optionRow = ctk.CTkFrame(contentFrame, fg_color="transparent")
+                optionRow.pack(anchor="w", fill="x", padx=20, pady=2)
+
+                chk = ctk.CTkCheckBox(
+                    optionRow, text=trait,
+                    font=("Inter", 14)
+                )
+                chk.pack(side="left", padx=20, pady=2)
+                self.filterCheckboxes[title][trait] = chk 
+
+                if trait in homebrewNames:
+                    iconLbl = ctk.CTkLabel(
+                    optionRow, 
+                    image=filterHomebrewIcon, 
+                    text=""
+                    )
+                    iconLbl.pack(side="left", padx=(5, 0))
+
+        #self.appearanceCheckboxes[title][trait] = chk
+
     def toggleDropdown(self, button, contentFrame, title):
         """
         Toggles the visibility of a dropdown menu.
@@ -657,7 +753,7 @@ class App(ctk.CTk):
         self.buildDropdown(self.filterListFrame, "Race", raceList)
         self.buildDropdown(self.filterListFrame, "Class", characterList)
         self.buildDropdown(self.filterListFrame, "Personality", personalityList)
-        self.buildDropdown(self.filterListFrame, "Appearance", appearanceList)
+        self.appearanceDropdown(self.filterListFrame, "Appearance")
         self.buildDropdown(self.filterListFrame, "Alignment", allignmentList)
         self.buildDropdown(self.filterListFrame, "Background", backgroundList)
         self.buildDropdown(self.filterListFrame, "Skills", skillsList)
@@ -2079,19 +2175,24 @@ class App(ctk.CTk):
         """
         self.saveToHistory()
         dictFilterSet = self.gatherFiltered()
+        appearanceFilters = self.gatherAppearance()
 
         strName = generator.CharacterGenerator().NameGeneration()
         dctClass = generator.CharacterGenerator().generateClass(dictFilterSet["Class"])
         dctRace = generator.CharacterGenerator().generateRace(dictFilterSet["Race"])
         dctStats = generator.CharacterGenerator().statGeneration()
-        dctBackground = generator.CharacterGenerator().generateBackground(dictFilterSet["Personality"])
+        dctBackground = generator.CharacterGenerator().generateBackground(dictFilterSet["Background"])
         dctPersonality = generator.CharacterGenerator().generatePersonality(dictFilterSet["Personality"])
-        dctAppearance = generator.CharacterGenerator().generateAppearance(dictFilterSet["Appearance"])
-        strAppearance = generator.CharacterGenerator().generateApperanceStr(dctRace["Race"])
-        strAlignment = generator.CharacterGenerator().alignmentGeneration()
-        lstActiveSkills = generator.CharacterGenerator().generateSkills(dctClass["Class"], "man", "man")
+        dctAppearance = generator.CharacterGenerator().generateAppearance(dictFilterSet["Race"])
+        if dictFilterSet == {'Hair Colour': [], 'Skin Tone': [], 'Eye Colour': [], 'Height': [], 'Build': [], 'Distinguishing Feature': []}:
+            strAppearance = generator.CharacterGenerator().createFilteredAppearance(appearanceFilters, dctRace["Race"])
+        else:
+            strAppearance = generator.CharacterGenerator().generateApperanceStr(dctRace["Race"])
+        strAlignment = generator.CharacterGenerator().alignmentGeneration(dictFilterSet["Alignment"])
+        #print(dctBackground["Background"])
+        lstActiveSkills = generator.CharacterGenerator().generateSkills(dctClass["Class"], dctBackground["Background"], dictFilterSet["Skills"])
 
-        """strClassName = dctClass["Class"]
+        """strClassName = dctClass["Class"] 
         strRaceName = dctRace["Race"]
         strClassDescription=dctClass["Description"]
         strRaceDescription=dctRace["Description"]"""
@@ -2143,6 +2244,19 @@ class App(ctk.CTk):
             ]
         return dictEntries
 
+    def gatherAppearance(self):
+        selectedAppearance = {}
+
+        for section, traits in self.appearanceDictionary.items():
+            selectedAppearance[section] = []
+
+            for trait in traits:
+                checkbox = self.filterCheckboxes["Appearance"].get(trait)
+
+                if checkbox and checkbox.get() == 1:
+                    selectedAppearance[section].append(trait)
+
+        return selectedAppearance
 # ------------------------------------------------------------------------------------------------------------------------------------
 # Importing and Exporting
 # ------------------------------------------------------------------------------------------------------------------------------------

@@ -2654,9 +2654,11 @@ class App(ctk.CTk):
             lbl = ctk.CTkLabel(
                 optionRow, 
                 text=f"{key}: {value}",
-                font=("Inter", 14)
+                font=("Inter", 14), 
+                wraplength=800,
+                justify = "left"
             )
-            lbl.pack(side="left", padx=20, pady=2) 
+            lbl.pack(anchor="w", side="left", padx=20, pady=2) 
 
         btnEdit = ctk.CTkButton(
             contentFrame, text="Load", 

@@ -258,9 +258,9 @@ class CharacterGenerator():
                     f"and {dctChosen['Eye Colour']} eyes. Bearing "
                     f"{dctChosen['Distinguishing Feature']}.")
         except:
-            print("fuuuck")
+            #print("error")
             print(appearanceFilters)
-            return "Not All Selected"
+            return "An Error Occured"
 
 
     # ------------------------------------------------------------------

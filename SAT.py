@@ -902,7 +902,7 @@ class App(ctk.CTk):
 
         lblDescriptionMain = ctk.CTkLabel(
             descriptionRow, 
-            text="NAME",
+            text="DESCRIPTION",
             font=("Inter", 12, "bold"),
             text_color=textColour1
             )
@@ -1043,6 +1043,8 @@ class App(ctk.CTk):
             self.hideOverlay()
             self.HomebrewSidebar()
             self.buildFilterDropdowns()
+            self.update_idletasks()
+            self.sidebar._parent_canvas.yview_moveto(0)
 
     def hideOverlay(self):
         """
@@ -1061,6 +1063,7 @@ class App(ctk.CTk):
         """
         self.popupFrame.destroy()
         self.overlayFrame.destroy()
+        
 
 # ------------------------------------------------------------------------------------------------------------------------------------
 # Edit Homebrew Popup
@@ -1356,6 +1359,8 @@ class App(ctk.CTk):
             self.hideEditOverlay()
             self.HomebrewSidebar()
             self.buildFilterDropdowns()
+            self.update_idletasks()
+            self.sidebar._parent_canvas.yview_moveto(0)
 
     def hideEditOverlay(self):
         """
@@ -1497,7 +1502,8 @@ class App(ctk.CTk):
         self.hideDeleteOverlay()
         self.HomebrewSidebar()
         self.buildFilterDropdowns()
-    
+        self.update_idletasks()
+        self.sidebar._parent_canvas.yview_moveto(0)
 # ------------------------------------------------------------------------------------------------------------------------------------
 # Functions to create the boxes when Generation will occur
 # ------------------------------------------------------------------------------------------------------------------------------------

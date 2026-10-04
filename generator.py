@@ -21,6 +21,9 @@ class CharacterGenerator():
         
         generateFeatureList(self, fileLocation, traitSet):
             Builds a descriptive appearance sentence for a given race.
+
+        generateAppearanceValue(self, filterSet):
+            Generates a descriptive appearance sentence for a given race.
  
 # ------------------------------------------------------------------------------------------------------------------------------------
 # Functions to generate each trait type.
@@ -219,6 +222,19 @@ class CharacterGenerator():
         return lstEntries
         
     def generateAppearanceValue(self, filterSet):
+        """
+        Generates a appearance sentence for a given race.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+            filterSet: the dictonary of filters to apply to the appearance generation.
+
+        Returns:
+            str: A descriptive appearance sentence for the given race.
+
+        Raises:
+            ValueError: If the Appearance CSV file is not found or if no entries match the filter
+        """
         lstEntries = []
         try:
             try:
@@ -244,6 +260,20 @@ class CharacterGenerator():
         #return lstEntries
 
     def createFilteredAppearance(self, appearanceFilters, Race):
+        """
+        Generates a descriptive appearance sentence for a given race, applying any specified filters.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+            appearanceFilters: A dictionary containing filters for appearance traits.
+            Race: The race of the character.
+
+        Returns:
+            str: A descriptive appearance sentence for the given race, with filters applied.
+            
+        Raises:
+            ValueError: If the Appearance CSV file is not found or if no entries match the filter
+        """
         appearanceOptions = self.generateAppearanceDict()
         try:
             dctChosen = {}
@@ -268,31 +298,137 @@ class CharacterGenerator():
     # ------------------------------------------------------------------
 
     def generateRace(self, filterSet):
+        """
+        Generates a single random race trait.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+            filterSet: A list of allowed race values to restrict entries to.
+
+        Returns:
+            dict: The randomly selected race trait row.
+
+        Raises:
+            ValueError: If the Race CSV file is not found or if no entries match the filter
+        """
         return self.generateTrait(self.raceLocation, "Race", filterSet)
 
     def generateClass(self, filterSet):
+        """
+        Generates a single random class trait.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+            filterSet: A list of allowed class values to restrict entries to.
+
+        Returns:
+            dict: The randomly selected class trait row.
+
+        Raises:
+            ValueError: If the Class CSV file is not found or if no entries match the filter
+        """
         return self.generateTrait(self.classLocation, "Class", filterSet)
 
     def generateBackground(self, filterSet):
+        """
+        Generates a single random background trait.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+            filterSet: A list of allowed background values to restrict entries to.
+
+        Returns:
+            dict: The randomly selected background trait row.
+
+        Raises:
+            ValueError: If the Background CSV file is not found or if no entries match the filter
+        """
         return self.generateTrait(self.backgroundLocation, "Background", filterSet)
 
     def generateHomebrew(self):
+        """
+        Generates a single random homebrew trait.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+
+        Returns:
+            dict: The randomly selected homebrew trait row.
+        """
         return self.generateTrait(self.HomebrewLocation, "Homebrew", [])
 
     def generateName(self):
+        """
+        Generates a single random name trait.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+
+        Returns:
+            dict: The randomly selected name trait row.
+        """
         return self.generateTrait(self.NameLocation, "Name", [])
 
     def generatePersonality(self, filterSet):
+        """
+        Generates a single random personality trait.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+            filterSet: A list of allowed personality values to restrict entries to.
+
+        Returns:
+            dict: The randomly selected personality trait row.
+
+        Raises:
+            ValueError: If the Personality CSV file is not found or if no entries match the filter
+        """
         return self.generateTrait(self.PersonalityLocation, "Personality", filterSet)
 
     def generateAppearance(self, filterSet):
+        """
+        Generates a single random appearance trait.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+            filterSet: A list of allowed appearance values to restrict entries to.
+
+        Returns:
+            dict: The randomly selected appearance trait row.
+
+        Raises:
+            ValueError: If the Appearance CSV file is not found or if no entries match the filter
+        """
         return self.generateTrait(self.AppearanceLocation, "Race", filterSet)
 
     def generateApperanceStr(self, traitValue):
+        """
+        Generates a descriptive appearance sentence for a given race.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+            traitValue: The race value for which to generate the appearance description.    
+
+        Returns:
+            str: A descriptive appearance sentence for the given race.
+        """
         return self.generateAppearanceValue(traitValue)
     
     def generateSkills(self, characterClass, background, filterSet):
-        """lstEntries = []
+        """
+        Picks a set of skill proficiencies for a character's class. 
+    
+        Args:
+            self: The instance of the CharacterGenerator class.
+            characterClass: The class of the character for which to generate skills.
+            background: The background of the character for which to generate skills.
+            filterSet: A list of allowed skill values to restrict entries to.
+
+        Returns:
+            list: A list of the selected skill proficiencies.
+        """
+        """
+        lstEntries = []
         skillList = self.generateSkillList()
         skillNumbers = random.sample(range(0, len(skillList)), 4)
         #return self.unique_numbers
@@ -348,6 +484,18 @@ class CharacterGenerator():
         #return self.generateTrait(self.AppearanceLocation, "Appearance", filterSet)
 
     def loadClassSkills(self):
+        """
+        Loads the skill proficiency options for every class from the Class traits CSV.
+        
+        Args:
+            self: The instance of the CharacterGenerator class.
+
+        Returns:
+            dict: A dictionary where each key is a class name and the value is another dictionary containing the description, skill options, and number of choices for that class.
+
+        Raises:
+            ValueError: If the Class CSV file is not found.
+        """
         classData = {}
         with open("Traits/ClassTraits.csv", newline='', encoding='utf-8') as csvFile:
             reader = csv.DictReader(csvFile)
@@ -363,6 +511,15 @@ class CharacterGenerator():
         """
         Loads the fixed skill proficiencies granted by each background
         from the Background traits CSV (semicolon-separated skill names).
+
+        Args:
+            backgroundSkills: The instance of the CharacterGenerator class.
+
+        Returns:
+            dict: A dictionary where each key is a background name and the value is a list of skill proficiencies granted by that background.
+
+        Raises:
+            ValueError: If the Background CSV file is not found.
         """
         backgroundSkills = {}
         with open(self.backgroundLocation, newline='', encoding='utf-8') as csvFile:
@@ -380,6 +537,19 @@ class CharacterGenerator():
     # Functions to generate each trait type.
     # ------------------------------------------------------------------
     def generateAppearanceDict(self):
+        """
+        Generates a dictionary of appearance traits and their possible values.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+
+        Returns:
+            dict: A dictionary where each key is an appearance trait and the value is a list of
+            possible values for that trait.
+
+        Raises:
+            ValueError: If the Appearance CSV file is not found.
+        """
         appearanceDictionary = {
                         "Hair Colour": ["Black", "Blonde", "Brown", "Curly red", "Dark red", "Deep purple", "Grey", "None (scaled head)", "Pale grey", "Red", "Sandy blonde", "Silver", "White"],
                         "Skin Tone": ["Ashen grey", "Black scales", "Bronze scales", "Charcoal", "Dark blue", "Dark brown", "Dark grey", "Deep purple", "Fair", "Gold scales", "Golden brown", "Green scales", "Jet black", "Olive", "Pale", "Red", "Red scales", "Ruddy", "Tanned"],
@@ -391,34 +561,130 @@ class CharacterGenerator():
         return appearanceDictionary
 
     def generateRaceList(self):
+        """
+        Generates a list of available races.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+
+        Returns:
+            list: A list of race names.
+
+        Raises:
+            ValueError: If the Race CSV file is not found.
+        """
         rows = self.generateFeatureList(self.raceLocation, "Race")
         return [row["Race"] for row in rows]
     
     def generateClassList(self):
+        """
+        Generates a list of available classes.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+
+        Returns:
+            list: A list of class names.
+
+        Raises:
+            ValueError: If the Class CSV file is not found.
+        """
         rows = self.generateFeatureList(self.classLocation, "Class")
         return [row["Class"] for row in rows]
 
     def generateBackgroundList(self):
+        """
+        Generates a list of available backgrounds.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+
+        Returns:
+            list: A list of background names.
+
+        Raises:
+            ValueError: If the Background CSV file is not found.
+        """
         rows = self.generateFeatureList(self.backgroundLocation, "Background")
         return [row["Background"] for row in rows]
 
     def generateHomebrewList(self):
+        """
+        Generates a list of available homebrew options.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+
+        Returns:
+            list: A list of homebrew names.
+
+        Raises:
+            ValueError: If the Homebrew CSV file is not found.
+        """
         rows = self.generateFeatureList(self.HomebrewLocation, "Homebrew")
         return [row["Homebrew"] for row in rows]
     
     def generateNameList(self):
+        """
+        Generates a list of available names.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+
+        Returns:
+            list: A list of name options.
+
+        Raises:
+            ValueError: If the Name CSV file is not found.
+        """
         rows = self.generateFeatureList(self.NameLocation, "Name")
         return [row["Name"] for row in rows]
 
     def generatePersonalityList(self):
+        """
+        Generates a list of available personalities.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+
+        Returns:
+            list: A list of personality options.
+
+        Raises:
+            ValueError: If the Personality CSV file is not found.
+        """
         rows = self.generateFeatureList(self.PersonalityLocation, "Personality")
         return [row["Personality"] for row in rows]
     
     def generateAppearanceList(self):
+        """
+        Generates a list of available appearance traits.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+
+        Returns:
+            list: A list of appearance trait options.
+
+        Raises:
+            ValueError: If the Appearance CSV file is not found.
+        """
         rows = self.generateFeatureList(self.AppearanceLocation, "Appearance")
-        return [row["Race"] for row in rows]
+        return [row["Appearance"] for row in rows]
 
     def generateAllignmentList(self):
+        """
+        Generates a list of all possible alignment combinations.
+        
+        Args:
+            self: The instance of the CharacterGenerator class.
+
+        Returns:
+            list: A list of alignment combinations.
+
+        Raises:
+            ValueError: If the alignment generation fails.
+        """
         axis1 = ["Lawful", "Neutral", "Chaotic"]
         axis2 = ["Good", "Neutral", "Evil"]
 
@@ -431,6 +697,18 @@ class CharacterGenerator():
         return lstEntries
 
     def generateSkillList(self):
+        """
+        Generates a list of all possible skill names.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+
+        Returns:
+            list: A list of skill names.
+
+        Raises:
+            ValueError: If the skill list generation fails.
+        """
         self.lstSkills = ["Acrobatics", "Animal Handling", "Arcana", "Athletics", "Deception", "History", "Insight", "Intimidation", "Investigation", "Medicine", "Nature", "Perception", "Performance", "Persuasion", "Religion", "Sleight of Hand", "Stealth", "Survival"]
         return self.lstSkills
     
@@ -438,6 +716,15 @@ class CharacterGenerator():
         """
         This function generates a random stat value between 1 and 18 for each of the six ability scores.
         This will be done by rolling 4d6 and dropping the lowest die. This will be done for each of the six ability scores.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+
+        Returns:
+            dict: A dictionary containing the six ability scores and their corresponding values.
+
+        Raises:
+            ValueError: If the stat generation fails.
         """
         abilityScores = {}
         for ability in ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"]:
@@ -450,6 +737,15 @@ class CharacterGenerator():
         """
         This function generates a random alignment for the character.
         This will be done by rolling a d9 and assigning an alignment based on the roll.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+        
+        Returns:
+            str: A string representing the randomly generated alignment.
+
+        Raises:
+            ValueError: If the alignment generation fails.
         """
         intRoll1 = random.randint(1, 3)
         intRoll2 = random.randint(1, 3)
@@ -467,6 +763,15 @@ class CharacterGenerator():
         """
         This function generates a random name for the character.
         This will be done by rolling a d6 and assigning a name based on the roll.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+
+        Returns:
+            str: A string representing the randomly generated name.
+
+        Raises:
+            ValueError: If the name generation fails.
         """
         location = "Traits/NameTraits.csv"
         lstEntries = []
@@ -489,6 +794,15 @@ class CharacterGenerator():
         """
         This function adds a homebrew trait to the HomebrewValues.csv file.
         This will be done by appending a new row to the CSV file with the type and name of the homebrew trait.
+
+        Args:
+            self: The instance of the CharacterGenerator class. 
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: If the homebrew addition fails.
         """
         with open("Traits/HomebrewValues.csv", "a", newline='', encoding='utf-8') as csvfile:
             fieldnames = ["Type", "Name", "Description"]
@@ -499,6 +813,20 @@ class CharacterGenerator():
         """
         This function edits a homebrew trait in the HomebrewValues.csv file.
         This will be done by reading the CSV file and writing a new CSV file with the updated values.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+            oldType: The type of the homebrew trait to be edited.
+            oldName: The name of the homebrew trait to be edited.
+            newType: The new type of the homebrew trait.
+            newName: The new name of the homebrew trait.
+            newdescription: The new description of the homebrew trait.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: If the homebrew editing fails.
         """
         fieldnames = ["Type", "Name", "Description"]
         lstEntries = []
@@ -523,6 +851,18 @@ class CharacterGenerator():
         """
         This function deletes a homebrew trait from the HomebrewValues.csv file.
         This will be done by reading the CSV file and writing a new CSV file without the deleted values.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+            type: The type of the homebrew trait to be deleted.
+            name: The name of the homebrew trait to be deleted.
+            description: The description of the homebrew trait to be deleted.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: If the homebrew deletion fails.
         """
         fieldnames = ["Type", "Name", "Description"]
         lstEntries = []
@@ -542,10 +882,39 @@ class CharacterGenerator():
             writer.writerows(lstEntries)
 
     def applyFilters(self, traitSet, filters):
+        """
+        This function applies filters to a given trait set.
+
+        Got deleted and literally does nothing, left to not break anything.
+        
+        Args:
+            self: The instance of the CharacterGenerator class.
+            traitSet: The trait set to which the filters will be applied.
+            filters: A list of filters to apply to the trait set.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: If the filter application fails.
+        """
         #left here as placeholder
         pass
 
     def loadHomebrew(self, filePath="Traits/HomebrewValues.csv"):
+        """
+        This function loads and alphabetically sorts every Homebrew entry.
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+            filePath: Path to the Homebrew CSV file.
+
+        Returns:
+            list: A list of dictionaries representing the sorted Homebrew entries.
+
+        Raises:
+            ValueError: If the Homebrew CSV file is not found.
+        """
         lstHomebrewEntries = []
         try:
             with open(filePath, newline='', encoding='utf-8') as csvfile:
@@ -562,6 +931,16 @@ class CharacterGenerator():
         """
         returns the name of all Homebrew values matching a given type
         This is used to add icons to homebrew values
+
+        Args:
+            self: The instance of the CharacterGenerator class.
+            traitType: The type of homebrew values to retrieve.
+
+        Returns:
+            set: A set of names of homebrew values matching the given type.
+
+        Raises:
+            ValueError: If the homebrew value retrieval fails.
         """
         return {
         entry["Name"] for entry in self.loadHomebrew()

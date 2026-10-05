@@ -740,13 +740,13 @@ class App(ctk.CTk):
         for widget in self.filterListFrame.winfo_children():
             widget.destroy()
 
-        self.filterCheckboxes = {}
+        self.filterCheckboxes = {}  
 
         characterList = generator.CharacterGenerator().generateClassList()
         raceList = generator.CharacterGenerator().generateRaceList()
         backgroundList = generator.CharacterGenerator().generateBackgroundList()
         personalityList = generator.CharacterGenerator().generatePersonalityList()
-        appearanceList = generator.CharacterGenerator().generateAppearanceList()
+        #appearanceList = generator.CharacterGenerator().generateAppearanceList()
         allignmentList = generator.CharacterGenerator().generateAllignmentList()
         skillsList = generator.CharacterGenerator().generateSkillList()
 

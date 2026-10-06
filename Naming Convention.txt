@@ -1,0 +1,7 @@
+For this this project I will be using camel casing.
+
+A function will look like:
+    def generateAppearanceList
+
+A varaible will look like:
+    camelCasing

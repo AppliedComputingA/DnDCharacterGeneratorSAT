@@ -740,13 +740,13 @@ class App(ctk.CTk):
         for widget in self.filterListFrame.winfo_children():
             widget.destroy()
 
-        self.filterCheckboxes = {}
+        self.filterCheckboxes = {}  
 
         characterList = generator.CharacterGenerator().generateClassList()
         raceList = generator.CharacterGenerator().generateRaceList()
         backgroundList = generator.CharacterGenerator().generateBackgroundList()
         personalityList = generator.CharacterGenerator().generatePersonalityList()
-        appearanceList = generator.CharacterGenerator().generateAppearanceList()
+        #appearanceList = generator.CharacterGenerator().generateAppearanceList()
         allignmentList = generator.CharacterGenerator().generateAllignmentList()
         skillsList = generator.CharacterGenerator().generateSkillList()
 
@@ -902,7 +902,7 @@ class App(ctk.CTk):
 
         lblDescriptionMain = ctk.CTkLabel(
             descriptionRow, 
-            text="NAME",
+            text="DESCRIPTION",
             font=("Inter", 12, "bold"),
             text_color=textColour1
             )
@@ -1043,6 +1043,8 @@ class App(ctk.CTk):
             self.hideOverlay()
             self.HomebrewSidebar()
             self.buildFilterDropdowns()
+            self.update_idletasks()
+            self.sidebar._parent_canvas.yview_moveto(0)
 
     def hideOverlay(self):
         """
@@ -1061,6 +1063,7 @@ class App(ctk.CTk):
         """
         self.popupFrame.destroy()
         self.overlayFrame.destroy()
+        
 
 # ------------------------------------------------------------------------------------------------------------------------------------
 # Edit Homebrew Popup
@@ -1356,6 +1359,8 @@ class App(ctk.CTk):
             self.hideEditOverlay()
             self.HomebrewSidebar()
             self.buildFilterDropdowns()
+            self.update_idletasks()
+            self.sidebar._parent_canvas.yview_moveto(0)
 
     def hideEditOverlay(self):
         """
@@ -1497,7 +1502,8 @@ class App(ctk.CTk):
         self.hideDeleteOverlay()
         self.HomebrewSidebar()
         self.buildFilterDropdowns()
-    
+        self.update_idletasks()
+        self.sidebar._parent_canvas.yview_moveto(0)
 # ------------------------------------------------------------------------------------------------------------------------------------
 # Functions to create the boxes when Generation will occur
 # ------------------------------------------------------------------------------------------------------------------------------------
@@ -2312,8 +2318,11 @@ class App(ctk.CTk):
             initialfile=f"{character['Name']}.json"
         )
         if filePath:
-            with open(filePath, "w", encoding="utf-8") as f:
-                json.dump(character, f, indent=2)
+            try:
+                with open(filePath, "w", encoding="utf-8") as f:
+                    json.dump(character, f, indent=2)
+            except:
+                print("an error occured")
 
     def importCharacter(self):
         """
@@ -2336,28 +2345,102 @@ class App(ctk.CTk):
         )
         if not filePath:
             return
+        try:
+            with open(filePath, "r", encoding="utf-8") as f:
+                character = json.load(f)
 
-        with open(filePath, "r", encoding="utf-8") as f:
-            character = json.load(f)
+            self.lblName.configure(text=character.get("Name", ""))
+            self.lblRace.configure(text=character.get("Race", ""))
+            self.lblClass.configure(text=character.get("Class", ""))
 
-        self.lblName.configure(text=character.get("Name", ""))
-        self.lblRace.configure(text=character.get("Race", ""))
-        self.lblClass.configure(text=character.get("Class", ""))
+            for key, value in character.get("Stats", {}).items():
+                if key in self.lblStatValues:
+                    self.lblStatValues[key].configure(text=value)
 
-        for key, value in character.get("Stats", {}).items():
-            if key in self.lblStatValues:
-                self.lblStatValues[key].configure(text=value)
+            self.lblClassInfo.configure(text=character.get("ClassInfo", ""))
+            self.lblBackgroundInfo.configure(text=character.get("BackgroundInfo", ""))
+            self.lblAppearanceInfo.configure(text=character.get("AppearanceInfo", ""))
+            self.lblAllignmentInfo.configure(text=character.get("AllignmentInfo", ""))
 
-        self.lblClassInfo.configure(text=character.get("ClassInfo", ""))
-        self.lblBackgroundInfo.configure(text=character.get("BackgroundInfo", ""))
-        self.lblAppearanceInfo.configure(text=character.get("AppearanceInfo", ""))
-        self.lblAllignmentInfo.configure(text=character.get("AllignmentInfo", ""))
+            for chk in self.skillsList:
+                self.skillCheckboxes[chk].deselect()
+                for skill in character.get("Skills"):
+                    if self.skillCheckboxes[chk].cget("text") == skill:
+                        self.skillCheckboxes[chk].select()
+        except:
+            self.tintOverlay()
+            self.errorPopup()
 
-        for chk in self.skillsList:
-            self.skillCheckboxes[chk].deselect()
-            for skill in character.get("Skills"):
-                if self.skillCheckboxes[chk].cget("text") == skill:
-                    self.skillCheckboxes[chk].select()
+    def errorPopup(self):
+        """
+        Changes a popup if a invalid file is imported.
+
+        If a invalid file is imported, this function creates a popup informing the user of the error
+        with a close button required to close the popup.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
+        self.errorFrame = ctk.CTkFrame(
+            self, 
+            fg_color=panelColour2, 
+            width=500, 
+            height=200,
+            corner_radius=12,
+            border_width=3,
+            border_color=colour8
+        )
+        self.errorFrame.place(relx=0.5, rely=0.5, anchor="center")
+        self.errorFrame.pack_propagate(False)
+        self.errorFrame.lift()
+
+        lblTitle = ctk.CTkLabel(
+        self.errorFrame, 
+        text="Invalid File Selected",
+        font=("Inter", 30, "bold")
+        )
+        lblTitle.pack(side = "top", anchor = "w", padx = 20, pady=(15, 10))
+
+        self.btnCloseError =  ctk.CTkButton(
+            self.errorFrame, 
+            text="Close", 
+            font=("Inter", 20, "bold"), 
+            fg_color=colour8, 
+            hover_color=colourButtonHover2,
+            border_color=buttonColour3,
+            border_width=3,
+            corner_radius=8, 
+            height=40, 
+            width=101,
+            anchor="center",
+            border_spacing=10,
+            command=self.hideErrorOverlay
+            )
+        self.btnCloseError.pack(side="bottom", anchor = "e", padx=20, pady=20)
+
+    def hideErrorOverlay(self):
+        """
+        Hides the error overlay and popup frames.
+
+        This function destroys the overlay and popup frames, effectively closing the add homebrew entry popup.
+
+        Args:
+            self: The instance of the App class.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
+        self.errorFrame.destroy()
+        self.overlayFrame.destroy()
 # ------------------------------------------------------------------------------------------------------------------------------------
 # Editing
 # ------------------------------------------------------------------------------------------------------------------------------------
